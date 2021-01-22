@@ -4,8 +4,7 @@ import Button from "../../components/Button";
 function HomeContainer() {
     return(
         <main>
-            <h2>Home container content</h2>
-            
+            <h2>Home container content</h2> 
         </main>
         
     )

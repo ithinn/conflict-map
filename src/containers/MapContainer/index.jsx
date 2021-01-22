@@ -1,9 +1,112 @@
-import React from "react";
+import React, {useEffect, useRef, useState, Fragment} from "react";
+import Mapbox from "mapbox-gl";
+import styled from "styled-components";
+import Cosmic from "cosmicjs";
+//import PopupImg from "../../components/PopupImg";
+import { NoEmitOnErrorsPlugin } from "webpack";
+import { IoLocationOutline } from "react-icons/io5";
+
+const MapWrapper = styled.div`
+    width: 96vw;
+    height: 500px;
+    margin: 0 auto;
+`
 
 function MapContainer() {
+    const mapElement = useRef(); //Reference to the div that contains the map
+    const popupImg = useRef();
+    
+    let marker;
+    let popUp;
+    const [mapState, setMapState] = useState(null);
+    const [pageData, setPageData] = useState(null);
+
+    Mapbox.accessToken = process.env.MAPBOX_API_KEY
+
+    useEffect(() => {
+        let map = new Mapbox.Map({
+            container: mapElement.current,
+            style: 'mapbox://styled/mapbox/navigation-guidance-night-v4',
+            zoom: 1,
+        });
+        
+        map.addControl(
+            new Mapbox.NavigationControl({
+              accessToken: process.env.MAPBOX_API_KEY
+            }),
+            'top-left'
+          );
+
+        setMapState(map);
+    }, []);
+
+
+    useEffect(() => {
+         //HENTER DATA FRA COSMIC
+        
+         const client = new Cosmic()
+         const bucket = client.bucket({
+             slug: process.env.BUCKET_SLUG,
+             read_key: process.env.READ_KEY
+         });
+ 
+         bucket.getObjects({
+             type: 'operations',
+             limit: 5,
+             props: 'slug,title,metadata',
+             sort: 'created_at'
+         })
+             .then(data => {
+                 
+                 setPageData(data);
+             })
+             .catch(error => {
+                 console.log(error);
+             })
+    }, [mapState]);
+
+
+    //Skriver ut markører etter at pageData er satt
+    useEffect(() => {
+
+        
+        if (pageData !== null) {
+            console.log(pageData.objects);
+
+            pageData.objects.map((item, index) => {
+                popUp = new Mapbox.Popup({
+                    className: 'popup',
+                    maxWidth: 'none'
+                });
+                popUp.setHTML(`
+                <img src=${item.metadata.header_image.url} />
+                <h3>${item.title}</h3>
+                <p>${item.metadata.location}</p>
+                `);
+                marker = new Mapbox.Marker();
+                marker.setLngLat([item.metadata.longitude, item.metadata.latitude]);
+                marker.setPopup(popUp);
+                marker.addTo(mapState);
+            })
+
+/* Denne virker i seg selv
+            pageData.objects.map(item => {
+                
+            })*/
+        }
+     
+    }, [pageData]);
+
+
+
+
+  
+ 
+  
     return(
         <main>
-            <h2>Map container content</h2>
+            
+            <MapWrapper ref={mapElement} />
         </main>
         
     )

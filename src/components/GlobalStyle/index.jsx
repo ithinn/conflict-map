@@ -28,6 +28,19 @@ const GlobalStyle = createGlobalStyle`
         margin: 0 0 1.5rem;
     }
 
+    .popup img {
+        width: 200px;
+    }
+
+    .popup h3 {
+        margin: 0;
+    }
+
+    .popup p {
+        margin: 0;
+    }
+    
+
 
 `
 

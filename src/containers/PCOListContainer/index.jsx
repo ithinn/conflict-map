@@ -20,7 +20,7 @@ function PCOListContainer() {
             sort: 'created_at'
         })
             .then(data => {
-                console.log(data);
+                console.log(data.objects);
                 setPageData(data);
             })
             .catch(error => {
@@ -37,10 +37,9 @@ function PCOListContainer() {
             <main>
                 <h2>PCO container content</h2>
                 <ul>
-                    {pageData.objects.map(item => {
-                        return 
-                        <li>
-                            <a href={`/peacekeeping-operations/${item.slug}`}></a>
+                    {pageData.objects.map((item, index) => {
+                        return <li key={item.title + index}>
+                            <a href={`/peacekeeping-operations/${item.slug}`}>{item.title}</a>
                         </li>})}
                 </ul>
             </main>
