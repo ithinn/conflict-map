@@ -7,6 +7,7 @@ const ButtonBase = styled.button`
   background-color: blue;
   color: white;
   padding: .5em;
+  margin-left: .5em;
   
 `
 function Button( {children} ) {

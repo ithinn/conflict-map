@@ -4,6 +4,61 @@ import Cosmic from "cosmicjs";
 function PCOListContainer() {
 
     const [pageData, setPageData] = useState(null);
+    const [options, setOptions] = useState({
+        title: {
+            text: "My chart"
+        },
+        tooltip: {
+            useHTML: true,
+            pointFormat: '<b>{point.name}:</b> {point.value}m CO<sub>2</sub>'
+        },
+        chart: {
+            type: 'packedbubble',
+            height: '100%',
+            backgroundColor:"#f9f9f8"
+        },
+        plotOptions: {
+            packedbubble: {
+                minSize: '30%',
+                maxSize: '120%',
+                zMin: 0,
+                zMax: 1000,
+                layoutAlgorithm: {
+                    splitSeries: false,
+                    gravitationalConstant: 0.02
+                },
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}',
+                    filter: {
+                        property: 'y',
+                        operator: '>',
+                        value: 250
+                    },
+                    style: {
+                        color: 'black',
+                        textOutline: 'none',
+                        fontWeight: 'normal'
+                    }
+                }
+            }
+        },
+        series: [{data: []}]
+    });
+
+    useEffect(() => {
+        fetch('https://ucdpapi.pcr.uu.se/api/battledeaths/20.1')
+            .then(response => {
+                console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }, []); 
 
     useEffect(() => {
         //Sett opp cosmicpakken først.

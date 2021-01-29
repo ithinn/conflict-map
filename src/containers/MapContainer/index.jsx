@@ -2,11 +2,20 @@ import React, {useEffect, useRef, useState, Fragment} from "react";
 import Mapbox from "mapbox-gl";
 import styled from "styled-components";
 import Cosmic from "cosmicjs";
+import Button from "../../components/Button";
+import FlexDiv from "../../components/FlexDiv";
 //import PopupImg from "../../components/PopupImg";
-import { NoEmitOnErrorsPlugin } from "webpack";
-import { IoLocationOutline } from "react-icons/io5";
+//import { NoEmitOnErrorsPlugin } from "webpack";
+import { IoBluetooth, IoLocationOutline } from "react-icons/io5";
 //import "../../../data/coredata_activepkomissions.json";
-import coreData, {dec2020Data} from "./data";
+//import coreData, {dec2020Data} from "./data";
+//import countries from "../../../data/countries.geojson";
+
+let map = null;
+let marker = null;
+let popUp;
+
+
 
 const MapWrapper = styled.div`
     width: 96vw;
@@ -14,25 +23,60 @@ const MapWrapper = styled.div`
     margin: 0 auto;
 `
 
+
 function MapContainer() {
     const mapElement = useRef(); //Reference to the div that contains the map
     const popupImg = useRef();
+    const operInput = useRef();
+    const confInput = useRef();
     
-    let marker;
-    let popUp;
-    const [mapState, setMapState] = useState(null);
-    const [pageData, setPageData] = useState(null);
-    //const [coreData, setCoreData] = useState(null);
+    
+
+    const [operationsData, setOperationsData] = useState(null);
+    const [conflictData, setConflictData] = useState(null);
+    const [operCheck, setOperCheck] = useState(true)
+    const [confCheck, setConfCheck] = useState(true)
+    const [chartState, setChartState] = useState({
+        data: [
+        ], 
+        layout: {
+          width: 200,
+          height: 200,
+          title: "Fordeling",
+         showlegend: false,
+        },
+        frames: [], 
+        config: {}
+      });
 
     Mapbox.accessToken = process.env.MAPBOX_API_KEY
 
     useEffect(() => {
-        let map = new Mapbox.Map({
+        map = new Mapbox.Map({
             container: mapElement.current,
-            style: 'mapbox://styled/mapbox/navigation-guidance-night-v4',
+            style: 'mapbox://styles/ithinn/ckki1ex630fz317nwvhn811o1',
             zoom: 1,
-        });
-        
+        })
+        .on("click", event => handleClick(event))
+     /*   .on('load', () => {
+            map.addSource('afghanistan', {
+                type: 'geojson',
+                data: geoJson
+            })
+
+            map.addLayer({
+                id: 'afghanistan-layer',
+                type: 'fill',
+                source: 'afghanistan',
+                layout: {},
+                paint: {
+                    'fill-color': '#593131',
+                    'fill-opacity': 0.6
+    
+                }
+            })
+        })*/
+
         map.addControl(
             new Mapbox.NavigationControl({
               accessToken: process.env.MAPBOX_API_KEY
@@ -40,7 +84,7 @@ function MapContainer() {
             'top-left'
           );
 
-        setMapState(map);
+       // setMapState(map);
     }, []);
 
 
@@ -48,20 +92,41 @@ function MapContainer() {
          //HENTER DATA FRA COSMIC
         
          const client = new Cosmic()
-         const bucket = client.bucket({
+         const operations = client.bucket({
              slug: process.env.BUCKET_SLUG,
              read_key: process.env.READ_KEY
          });
  
-         bucket.getObjects({
-             type: 'operations',
+         operations.getObjects({
+             type: 'conflicts-copy-3667df10-621e-11eb-a47b-456a3acdd925',
              limit: 12,
              props: 'slug,title,metadata',
              sort: 'created_at'
          })
              .then(data => {
+                console.log(data.objects)
+                 setOperationsData(data);
+             })
+             .catch(error => {
+                 console.log(error);
+             })
+
+         const client2 = new Cosmic()
+         const conflicts = client2.bucket({
+             slug: process.env.BUCKET_SLUG,
+             read_key: process.env.READ_KEY
+         });
+ 
+         conflicts.getObjects({
+             type: 'conflicts',
+             limit: 12,
+             props: 'slug,title,metadata',
+             sort: 'created_at'
+         })
+             .then(data => {
+                 setConflictData(data)
                  
-                 setPageData(data);
+                 
              })
              .catch(error => {
                  console.log(error);
@@ -70,60 +135,148 @@ function MapContainer() {
         
        
 
-    }, [mapState]);
+    }, [map]);
 
 
 
     //Skriver ut markører etter at pageData er satt
     useEffect(() => {
 
+        let el; 
+        let popupArticle;
         
-        if (pageData !== null) {
-            console.log(pageData.objects);
+        let newChartData = null;
 
-            pageData.objects.map((item, index) => {
+        if (operationsData !== null && operCheck === true) {
+          
+            
+            operationsData.objects.map((item, index) => {
+               
+               /*
+               FORSØK PÅ Å SETTE STATE FOR PAI-DIAGRAMMET
+                newChartData = 
+                [{
+                    values: [item.metadata.data.total_military_personell, item.metadata.data.total_civilian_personell,],
+                    labels: ['Militært personell', 'Sivilt personell'],
+                    type: 'pie'
+                }]
+
+                let newChartState = {
+                    ...chartState,
+                    data: [newChartData]
+                };
+
+                setChartState(newChartState);*/
+
+
+                el = document.createElement('div');
+                el.style.display = 'block';
+                el.style.width = '30px';
+                el.style.height = '30px';
+                el.style.backgroundImage = `url(${item.metadata.icon_image.url})`;
+                el.style.backgroundSize = 'cover';
+                el.style.backgroundPosition= "center";
+                el.style.borderRadius = "50%";
+
                 popUp = new Mapbox.Popup({
                     className: 'popup',
                     maxWidth: 'none'
                 });
+
+                
+                
                 popUp.setHTML(`
-                <img src=${item.metadata.header_image.url} />
+                <img src=${item.metadata.header_img.url} />
                 <h3>${item.title}</h3>
                 <p>${item.metadata.location}</p>
-                <p>Sivilt personell: ${item.metadata.civilian_personell}</p>
-                <p>Militært personell: ${item.metadata.military_personell}</p>
-                <p>Totalt personell: ${item.metadata.total_personell}</p>
-                <p>Dødsfall: ${item.metadata.fatalities}</p>
-                
-                
-                <p>(Desember 2020)</p>
+               
                 
                 `);
-                marker = new Mapbox.Marker();
+                marker = new Mapbox.Marker(el);
                 marker.setLngLat([item.metadata.longitude, item.metadata.latitude]);
                 marker.setPopup(popUp);
-                marker.addTo(mapState);
-            })
+                marker.addTo(map);
 
-/* Denne virker i seg selv
-            pageData.objects.map(item => {
+            
                 
-            })*/
+            })
+            
         }
-        
-     
-    }, [pageData]);
 
-    console.log(coreData);
-    console.log(dec2020Data);
+        if (conflictData !== null) {
+            conflictData.objects.map((item, index) => {
+                el = document.createElement('div');
+                el.style.display = 'block';
+                el.style.width = '30px';
+                el.style.height = '30px';
+                el.style.backgroundImage = `url(${item.metadata.icon_image.url})`;
+                el.style.backgroundSize = 'cover';
+                el.style.backgroundPosition= "center";
+                el.style.borderRadius = "50%";
 
+                popUp = new Mapbox.Popup({
+                    className: 'popup',
+                    maxWidth: 'none',
+                    offset: [-27, 198]
+                });
+                /*
+                popUp.setHTML(`
+                <img src=${item.metadata.header_img.url} />
+                <h3>${item.title}</h3>
+                <p>${item.metadata.location}</p>
+                <p>Parter: ${item.metadata.parties}</p>
+                <p>${item.metadata.description}</p>
+                <a href=${item.metadata.link}>Les konfliktprofilen</a>
+                `);*/
+                popupArticle = `
+                <article>${<Button>Test</Button>}</article>
+                `
+                popUp.setHTML(popupArticle);
+                
+                marker = new Mapbox.Marker(el);
+                marker.setLngLat([item.metadata.longitude, item.metadata.latitude]);
+                marker.setPopup(popUp);
+                marker.addTo(map);
+        })}
 
   
+     
+    }, [operationsData, operCheck]);
+
+    
+   
+
+
+    const toggleChecked = ( {target} ) => {
+        console.log(target.checked);
+        if (target.checked === true) {
+            setOperCheck(true)
+        } else if (target.checked === false) {
+            setOperCheck(false);
+        }
+    }
+
+    const handleClick = event => {
+        console.log(event.lngLat);
+       /* map.flyTo({
+            center: event.lngLat,
+            zoom: 4
+        })*/
+    }
+        
  
+
+
   
     return(
         <main>
-            
+
+            <FlexDiv width="80%" height="auto" direction="row">
+                <label htmlFor="conf">Konflikter</label>
+                <input ref={confInput} type="checkbox" id="conf"></input>
+                <label htmlFor="oper">FNs fredsoperasjoner</label>
+                <input ref={operInput} type="checkbox" id="oper" onClick={toggleChecked} ></input>
+            </FlexDiv>
             <MapWrapper ref={mapElement} />
         </main>
         

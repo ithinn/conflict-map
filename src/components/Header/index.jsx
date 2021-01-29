@@ -28,7 +28,7 @@ export const LiBase = styled.li`
 function Header() {
     return(
         <header>
-            <PageTitle>FNs fredsbevarende styrker</PageTitle>
+            <PageTitle>Konflikt</PageTitle>
             <UlBase>
                 <LiBase>
                     <Link to="/">Home</Link>

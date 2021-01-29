@@ -1,4 +1,7 @@
 import { createGlobalStyle } from "styled-components";
+import planesImg from "../../img/UX_Gun_on_Unsplash.jpg";
+
+
 
 const GlobalStyle = createGlobalStyle`
     
@@ -24,12 +27,27 @@ const GlobalStyle = createGlobalStyle`
         background: #f9f9f8;
     }
 
+    header {
+        height: 30vh;
+        background-image: url(${planesImg});
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 1em;
+    }
+
+    main {
+        margin-top: 2em;
+    }
+
     h1, h2, h3 {
         margin: 0 0 1.5rem;
     }
 
     .popup img {
-        width: 200px;
+        width: 80%;
     }
 
     .popup h3 {
@@ -39,7 +57,14 @@ const GlobalStyle = createGlobalStyle`
     .popup p {
         margin: 0;
     }
-    
+
+    .popup {
+        width: 20em;
+        display: flex;
+        flex-direction: column;
+    }
+
+
 
 
 `
