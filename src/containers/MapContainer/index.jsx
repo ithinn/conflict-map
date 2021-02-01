@@ -157,7 +157,7 @@ function MapContainer() {
                         .onClick(() => {
                             map.flyTo({
                                 center: [item.metadata.longitude, item.metadata.latitude],
-                                zoom: 3
+                                zoom: `${item.metadata.zoom_level ? item.metadata.zoom_level : 3}`
                             })
                             console.log(item.metadata);
                             //removes existing layers and sources if a conflict marker has been clicked on earlier
