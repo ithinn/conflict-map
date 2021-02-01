@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState, Fragment} from "react";
 import Mapbox from "mapbox-gl";
 import styled from "styled-components";
 import Cosmic from "cosmicjs";
+import { IoFileTrayOutline } from "react-icons/io5";
 
 let map = null;
 let marker = null;
@@ -58,12 +59,15 @@ function MapContainer() {
         })
         .then(data => {
             setConflictData(data);
+            console.log(data);
         })
         .catch(error => {
             console.log(error);
         })
     }, []);
     
+
+    //Create the map
     useEffect(() => {
         map = new Mapbox.Map({
             container: mapElement.current,
@@ -107,7 +111,26 @@ function MapContainer() {
             // Markers for conflicts
             if (conflictData !== null) {
 
-                conflictData.objects.map((item, index) => {
+                //Workarount - create markers with click-event class
+                class ClickableMarker extends Mapbox.Marker {
+                    onClick(handleClick) {
+                        this._handleClick = handleClick;
+                        return this;
+                    }
+
+                    _onMapClick(event) {
+                        const targetElement = event.originalEvent.target;
+                        const element = this._element;
+
+                        if (this._handleClick && (targetElement === element || element.contains((targetElement)))) {
+                            this._handleClick()
+                        }
+                    }
+                };
+           
+                conflictData.objects.forEach(item => {
+
+                    //styling for custom marker
                     el = document.createElement('div');
                     el.style.display = 'block';
                     el.style.width = '30px';
@@ -117,29 +140,25 @@ function MapContainer() {
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
                     
-                    popUp = new Mapbox.Popup({
-                        className: 'popup',
-                        maxWidth: 'none',
-                        offset: [-27, 198]
-                    });
-                    
-                    popUp.setHTML(`
-                    <img src=${item.metadata.header_img.url} />
-                    <h3>${item.title}</h3>
-                    <p>${item.metadata.location}</p>
-                    <p>Parter: ${item.metadata.parties}</p>
-                    <p>${item.metadata.description}</p>
-                    <a href=${item.metadata.link}>Les konfliktprofilen</a>
-                    `);
-                  
-                    marker = new Mapbox.Marker(el);
-                    marker.setLngLat([item.metadata.longitude, item.metadata.latitude]);
-                    marker.setPopup(popUp);
-                    marker.addTo(map);
-                });
+
+                    //new conflict markers with flyTo on onClick. 
+                    new ClickableMarker(el)
+                        .setLngLat([item.metadata.longitude, item.metadata.latitude])
+                        .onClick(() => {
+                            map.flyTo({
+                                center: [item.metadata.longitude, item.metadata.latitude],
+                                zoom: 3});
+                            }
+                        )
+                        .addTo(map)
+                })
             }
-        })//on.load
+        })
     }, [operationsData, conflictData]);
+
+    function handleMarkerClick({target}) {
+        console.log("it's clicked");
+    }
 
     function renderSkeleton() {
         return(
