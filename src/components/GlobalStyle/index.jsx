@@ -28,7 +28,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     header {
-        height: 30vh;
+        height: 10vh;
         background-image: url(${planesImg});
         background-size: cover;
         background-position: center;

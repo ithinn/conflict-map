@@ -2,11 +2,19 @@ import React, {useEffect, useRef, useState, Fragment} from "react";
 import Mapbox from "mapbox-gl";
 import styled from "styled-components";
 import Cosmic from "cosmicjs";
-import { IoFileTrayOutline } from "react-icons/io5";
+import polygons from "./geodata"
+import polygons2 from "../../../data/polygons.json"
+//import { IoFileTrayOutline } from "react-icons/io5";
 
 let map = null;
 let marker = null;
 let popUp = null;
+let keys;
+
+let geoData = null;
+
+console.log(polygons[1].features[0].properties.ADMIN);
+console.log(polygons2)
 
 const MapWrapper = styled.div`
     width: 96vw;
@@ -66,7 +74,7 @@ function MapContainer() {
         })
     }, []);
     
-
+    
     //Create the map
     useEffect(() => {
         map = new Mapbox.Map({
@@ -139,15 +147,48 @@ function MapContainer() {
                     el.style.backgroundSize = 'cover';
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
+
                     
 
+                    
                     //new conflict markers with flyTo on onClick. 
                     new ClickableMarker(el)
                         .setLngLat([item.metadata.longitude, item.metadata.latitude])
                         .onClick(() => {
                             map.flyTo({
                                 center: [item.metadata.longitude, item.metadata.latitude],
-                                zoom: 3});
+                                zoom: 3
+                            })
+                            console.log(item.metadata);
+                            //removes existing layers and sources if a conflict marker has been clicked on earlier
+                            if (geoData !== null) {
+                                map.removeLayer('country');
+                                map.removeSource('pol');
+                            }
+
+                            //finds the right polygon for the conflict marker that has been clicked. 
+                            for (let i = 0; i < polygons.length; i++) {
+                                if (polygons[i].features[0].properties.ADMIN === item.title) {
+                                    geoData = polygons[i]
+                                }
+                            }
+                            
+                            map.addSource("pol", {
+                                'type': 'geojson',
+                                'data': geoData
+                            })
+                            .addLayer({
+                                id: 'country',
+                                type: 'fill',
+                                source: 'pol',
+                                layout: {},
+                                paint: {
+                                    'fill-color': 'rgba(200, 100, 240, 0.4)',
+                                    'fill-outline-color': 'rgba(200, 100, 240, 1)'
+                                }
+                            })
+
+                                
                             }
                         )
                         .addTo(map)
@@ -156,9 +197,7 @@ function MapContainer() {
         })
     }, [operationsData, conflictData]);
 
-    function handleMarkerClick({target}) {
-        console.log("it's clicked");
-    }
+   
 
     function renderSkeleton() {
         return(
