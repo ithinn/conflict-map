@@ -5,7 +5,6 @@ import Cosmic from "cosmicjs";
 import InfoBox from "../../components/InfoBox";
 
 let map = null;
-let marker = null;
 let popUp = null;
 let geoData = null;
 
@@ -19,7 +18,7 @@ const MapWrapper = styled.div`
 
 function MapContainer() {
     const mapElement = useRef();
-    const infoWrapper = useRef()
+    //const infoWrapper = useRef()
     const [operationsData, setOperationsData] = useState(null);
     const [conflictData, setConflictData] = useState(null);
     const [operationsMarkers, setOperationsMarkers] = useState([])
@@ -82,8 +81,7 @@ function MapContainer() {
     useEffect(() => {
 
         if (conflictData !== null) {
-
-        
+ 
         map = new Mapbox.Map({
             container: mapElement.current,
             style: 'mapbox://styles/ithinn/ckki1ex630fz317nwvhn811o1',
@@ -202,35 +200,35 @@ function MapContainer() {
                 })
             }
         })
+    
+    map.addControl( new Mapbox.NavigationControl({
+        accessToken: process.env.MAPBOX_API_KEY
+      }))
     }
     }, [operationsData, conflictData]);
     
 
     function handleCheckbox(event) {
         let list;
+
         if (event.target.id === "operations") {
-
             list = document.querySelectorAll(".operations-marker")
-
             if (event.target.checked === false) {
                 list.forEach(item => {
                   item.style.visibility = "hidden"
                 })
-            }
-            else {
+            } else {
                 list.forEach(item => {
                     item.style.visibility = "visible"
                   })
             }
           
         } else if (event.target.id === "conflicts") {
-          list = document.querySelectorAll(".conflicts-marker")
-          
+            list = document.querySelectorAll(".conflicts-marker")   
             if (event.target.checked === false) {
                 list.forEach(item => {
                     item.style.visibility = "hidden"
             })
-
             } else {
                 list.forEach(item => {
                     item.style.visibility = "visible"
@@ -238,6 +236,17 @@ function MapContainer() {
             }    
     }}
 
+    function handleCloseIcon(event) {
+        console.log(event.target);
+        document.querySelector(".infowrap").innerHTML = ""
+        setIsInfo(false);
+        map.flyTo({
+            center: [6.37, 20.56],
+            zoom: 1
+        })
+        //map.removeLayer('country');
+        //map.removeSource('pol');
+    }
 
     function renderSkeleton() {
         return(
@@ -247,7 +256,7 @@ function MapContainer() {
     
     function renderPage() {
         return(<>
-            <InfoBox func={handleCheckbox} isInfo={isInfo} />
+            <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} />
             <MapWrapper ref={mapElement} />
             </>
         )

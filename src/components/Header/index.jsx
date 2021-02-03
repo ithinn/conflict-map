@@ -31,13 +31,10 @@ function Header() {
             <PageTitle>Konflikt</PageTitle>
             <UlBase>
                 <LiBase>
-                    <Link to="/">Home</Link>
+                    <Link to="/">Datavisualisering</Link>
                 </LiBase>
                 <LiBase>
                     <Link to="/map">Kart</Link>
-                </LiBase>
-                <LiBase>
-                    <Link to="/peacekeeping-operations">Fredsbevarende operasjoner</Link>
                 </LiBase>
             </UlBase>
         </header>

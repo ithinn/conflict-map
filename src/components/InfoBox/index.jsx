@@ -19,19 +19,29 @@ const InfoBoxBase = styled.article`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
 `
 
 const LabelAsButton = styled.label`
     font-size: .7rem;
-    border: 2px solid #261c1b;
-    padding: .2em .2em;
+    border: .1px solid black;
+    padding: .3em .3em;
     text-align: center;
     display: flex;
     align-items: center;
     width: 100%;
-  
+    &:hover {
+        background: rgba(3, 3, 3, .5);
+        color: white;
+    }
+    &:active{
+        background: #593131;
+    }
     
 `
+
+
+
 const IconImage = styled.img`
     width: 20px;
     height: 20px;
@@ -43,26 +53,42 @@ const IconImage = styled.img`
 const InvisibleCheckbox = styled.input`
 height: 1px;
 width: 1px;
+&:checked ~ label {
+    background: #aebabf;
+    color: black;
+  
+    border: 2px solid black;
+}
+//&:checked ~ label {
+ //   box-shadow: inset 0px 0px 18px 5px rgba(0,0,0,0.56);
+//}
+
 `
 
-function InfoBox({func, isInfo }) {
+function InfoBox({func, isInfo, handleClose }) {
     
 
     return(
         <InfoBoxBase>
             <FlexDiv width="96%" height="auto" direction="column">
+                
+                <div>
+                <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts"></InvisibleCheckbox>
                 <LabelAsButton htmlFor="conflicts">
                     <IconImage src={confIcon} />
                     Konflikter
                 </LabelAsButton>
-
-                <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts"></InvisibleCheckbox>
+                </div>
                 
+                <div>
+                <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations"></InvisibleCheckbox>
                 <LabelAsButton htmlFor="operations">
                     <IconImage src={opIcon} />
-                    FN-operasjoner</LabelAsButton>
+                    FN-operasjoner
+                </LabelAsButton>
+                </div>
                 
-                <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations"></InvisibleCheckbox>
+               
                 
                 
             </FlexDiv>
@@ -71,7 +97,7 @@ function InfoBox({func, isInfo }) {
             
                 {isInfo ? 
                 <IconContext.Provider value={{size: "1rem"}}>
-                    <AiOutlineCloseCircle/>
+                    <AiOutlineCloseCircle onClick={handleClose}/>
                 </IconContext.Provider> : null}
 
                 <FlexDiv width="100%" height="auto" direction="column" className="infowrap">

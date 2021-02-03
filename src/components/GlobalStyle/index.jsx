@@ -29,13 +29,14 @@ const GlobalStyle = createGlobalStyle`
 
     header {
         height: 10vh;
-        background-image: url(${planesImg});
+        /*background-image: url(${planesImg});
         background-size: cover;
-        background-position: center;
+        background-position: center;*/
         display: flex;
         align-items: center;
         justify-content: space-around;
         padding: 1em;
+        background: white;
     }
 
     main {
@@ -43,7 +44,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     h1, h2, h3 {
-        margin: 0 0 1.5rem;
+        margin: 0;
     }
 
     .popup img {
