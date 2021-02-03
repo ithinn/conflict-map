@@ -64,6 +64,10 @@ const GlobalStyle = createGlobalStyle`
         flex-direction: column;
     }
 
+    .operations-marker {
+        visibility: visible;
+    }
+
 
 
 

@@ -2,19 +2,14 @@ import React, {useEffect, useRef, useState, Fragment} from "react";
 import Mapbox from "mapbox-gl";
 import styled from "styled-components";
 import Cosmic from "cosmicjs";
-import polygons from "./geodata"
-import polygons2 from "../../../data/polygons.json"
-//import { IoFileTrayOutline } from "react-icons/io5";
+import InfoBox from "../../components/InfoBox";
 
 let map = null;
 let marker = null;
 let popUp = null;
-let keys;
-
 let geoData = null;
 
-console.log(polygons[1].features[0].properties.ADMIN);
-console.log(polygons2)
+
 
 const MapWrapper = styled.div`
     width: 96vw;
@@ -24,8 +19,16 @@ const MapWrapper = styled.div`
 
 function MapContainer() {
     const mapElement = useRef();
+    const infoWrapper = useRef()
     const [operationsData, setOperationsData] = useState(null);
     const [conflictData, setConflictData] = useState(null);
+    const [operationsMarkers, setOperationsMarkers] = useState([])
+    const [conflictsMarkers, setConflictsMarkers] = useState([])
+    const [isInfo, setIsInfo] = useState(null);
+
+    function checkBoxes() {
+
+    }
 
     Mapbox.accessToken = process.env.MAPBOX_API_KEY;
 
@@ -73,10 +76,14 @@ function MapContainer() {
             console.log(error);
         })
     }, []);
-    
-    
+
+
     //Create the map
     useEffect(() => {
+
+        if (conflictData !== null) {
+
+        
         map = new Mapbox.Map({
             container: mapElement.current,
             style: 'mapbox://styles/ithinn/ckki1ex630fz317nwvhn811o1',
@@ -84,11 +91,11 @@ function MapContainer() {
         })
         .on("load", () => {
             let el;
-
             //Markers for operations
             if (operationsData !== null) {
                 operationsData.objects.map(item => {
                     el = document.createElement('div');
+                    el.classList.add("operations-marker")
                     el.style.display = 'block';
                     el.style.width = '30px';
                     el.style.height = '30px';
@@ -107,11 +114,8 @@ function MapContainer() {
                         <h3>${item.title}</h3>
                         <p>${item.metadata.location}</p>
                     `)
-
-                    marker = new Mapbox.Marker(el);
-                    marker.setLngLat([item.metadata.longitude, item.metadata.latitude]);
-                    marker.setPopup(popUp);
-                    marker.addTo(map);
+              
+                    setOperationsMarkers(prev => [...prev, new Mapbox.Marker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).setPopup(popUp).addTo(map)])
 
                 })
             }
@@ -137,9 +141,9 @@ function MapContainer() {
                 };
            
                 conflictData.objects.forEach(item => {
-
                     //styling for custom marker
                     el = document.createElement('div');
+                    el.classList.add("conflicts-marker")
                     el.style.display = 'block';
                     el.style.width = '30px';
                     el.style.height = '30px';
@@ -148,31 +152,33 @@ function MapContainer() {
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
 
+                    let html = `
                     
+                    <h2>${item.title}</h2>
+                    <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
+                    <p><strong>Parter: </strong>${item.metadata.parties}
+                    <p>${item.metadata.description}
+                    <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
+                    `
+                    
+                    setConflictsMarkers(prev => [...prev, new ClickableMarker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).onClick(() => {
+                            
+                            document.querySelector(".infowrap").innerHTML = html;
+                            setIsInfo(true);
 
-                    
-                    //new conflict markers with flyTo on onClick. 
-                    new ClickableMarker(el)
-                        .setLngLat([item.metadata.longitude, item.metadata.latitude])
-                        .onClick(() => {
                             map.flyTo({
                                 center: [item.metadata.longitude, item.metadata.latitude],
                                 zoom: `${item.metadata.zoom_level ? item.metadata.zoom_level : 3}`
                             })
-                            console.log(item.metadata);
+                         
                             //removes existing layers and sources if a conflict marker has been clicked on earlier
                             if (geoData !== null) {
                                 map.removeLayer('country');
                                 map.removeSource('pol');
                             }
 
-                            //finds the right polygon for the conflict marker that has been clicked. 
-                            for (let i = 0; i < polygons.length; i++) {
-                                if (polygons[i].features[0].properties.ADMIN === item.title) {
-                                    geoData = polygons[i]
-                                }
-                            }
-                            
+                            geoData = item.metadata.data;
+            
                             map.addSource("pol", {
                                 'type': 'geojson',
                                 'data': geoData
@@ -186,18 +192,52 @@ function MapContainer() {
                                     'fill-color': 'rgba(200, 100, 240, 0.4)',
                                     'fill-outline-color': 'rgba(200, 100, 240, 1)'
                                 }
-                            })
-
-                                
+                            })    
                             }
-                        )
-                        .addTo(map)
+
+                            
+
+
+                        ).addTo(map)])//set ferdig
                 })
             }
         })
+    }
     }, [operationsData, conflictData]);
+    
 
-   
+    function handleCheckbox(event) {
+        let list;
+        if (event.target.id === "operations") {
+
+            list = document.querySelectorAll(".operations-marker")
+
+            if (event.target.checked === false) {
+                list.forEach(item => {
+                  item.style.visibility = "hidden"
+                })
+            }
+            else {
+                list.forEach(item => {
+                    item.style.visibility = "visible"
+                  })
+            }
+          
+        } else if (event.target.id === "conflicts") {
+          list = document.querySelectorAll(".conflicts-marker")
+          
+            if (event.target.checked === false) {
+                list.forEach(item => {
+                    item.style.visibility = "hidden"
+            })
+
+            } else {
+                list.forEach(item => {
+                    item.style.visibility = "visible"
+                })
+            }    
+    }}
+
 
     function renderSkeleton() {
         return(
@@ -207,17 +247,15 @@ function MapContainer() {
     
     function renderPage() {
         return(<>
-            <h2>Test</h2>
-           
-            
+            <InfoBox func={handleCheckbox} isInfo={isInfo} />
+            <MapWrapper ref={mapElement} />
             </>
         )
     }
 
     return(
         <>
-         <MapWrapper ref={mapElement} />
-        {(operationsData === null) ? renderSkeleton() : renderPage()}
+            {(operationsData === null) ? renderSkeleton() : renderPage()}
         </>
     )
 }

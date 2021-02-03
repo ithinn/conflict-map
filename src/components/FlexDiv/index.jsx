@@ -8,15 +8,11 @@ width: ${props => props.width};
 height: ${props => props.height};
 flex-direction: ${props => props.direction};
 margin-bottom: 1em;
+font-size: .5rem;
+justify-content: ${props => props.justify};
+align-items: ${props => props.align}
 `
 
-/*
-function FlexDiv( {width, height, direction}) {
-
-    return(
-        <FlexBase style={{height: height}, {width: width}, {flexDirection: direction}}></FlexBase>
-    )
-}*/
 
 
 export default FlexDiv
