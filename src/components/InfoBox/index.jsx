@@ -9,30 +9,32 @@ import opIcon from "../../img/Flags/un.png"
 
 const InfoBoxBase = styled.article`
     background-color: white;
-    width: 10em;
+    width: 12em;
     height: auto;
     position: absolute;
     z-index: 1;
     padding: .5em;
     margin-top: 1em;
-    left: 1em;
+    left: 2em;
     display: flex;
     flex-direction: column;
     justify-content: center;
     box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
+
+    
 `
 
 const LabelAsButton = styled.label`
-    font-size: .7rem;
-    border: .1px solid black;
+    font-size: .8rem;
+    
     padding: .3em .3em;
     text-align: center;
     display: flex;
     align-items: center;
     width: 100%;
     &:hover {
-        background: rgba(3, 3, 3, .5);
-        color: white;
+        background: lightgray;
+        
     }
     &:active{
         background: #593131;
@@ -40,32 +42,43 @@ const LabelAsButton = styled.label`
     
 `
 
+const ImgDiv = styled.div`
+width: 40px;
+display: flex;
+justify-content: flex-end;
+height: auto;
+background: lightgray;
+border: 1px darkgrey solid;
+border-radius: 10em;
+margin-right: 1em;
 
+box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.25);
+`
+
+const ImgDivOff = styled(ImgDiv)`
+justify-content: flex-start;
+background: #f9f9f8;
+
+`
 
 const IconImage = styled.img`
     width: 20px;
     height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    margin-right: 1em;
+    
 `
 
 const InvisibleCheckbox = styled.input`
 height: 1px;
 width: 1px;
 &:checked ~ label {
-    background: #aebabf;
-    color: black;
-  
-    border: 2px solid black;
+    
 }
-//&:checked ~ label {
- //   box-shadow: inset 0px 0px 18px 5px rgba(0,0,0,0.56);
-//}
 
 `
 
-function InfoBox({func, isInfo, handleClose }) {
+function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB }) {
     
 
     return(
@@ -75,7 +88,12 @@ function InfoBox({func, isInfo, handleClose }) {
                 <div>
                 <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts"></InvisibleCheckbox>
                 <LabelAsButton htmlFor="conflicts">
-                    <IconImage src={confIcon} />
+                    {conflictCB ? <ImgDiv>
+                        <IconImage src={confIcon} />
+                    </ImgDiv> : <ImgDivOff>
+                        <IconImage src={confIcon} />
+                    </ImgDivOff>}
+                    
                     Konflikter
                 </LabelAsButton>
                 </div>
@@ -83,7 +101,13 @@ function InfoBox({func, isInfo, handleClose }) {
                 <div>
                 <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations"></InvisibleCheckbox>
                 <LabelAsButton htmlFor="operations">
-                    <IconImage src={opIcon} />
+                    
+                    {operationsCB ? <ImgDiv>
+                        <IconImage src={opIcon} />
+                    </ImgDiv> : <ImgDivOff>
+                        <IconImage src={opIcon} />
+                    </ImgDivOff>}
+                    
                     FN-operasjoner
                 </LabelAsButton>
                 </div>

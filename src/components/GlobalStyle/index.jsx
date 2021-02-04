@@ -29,22 +29,22 @@ const GlobalStyle = createGlobalStyle`
 
     header {
         height: 10vh;
-        /*background-image: url(${planesImg});
-        background-size: cover;
-        background-position: center;*/
         display: flex;
         align-items: center;
         justify-content: space-around;
         padding: 1em;
         background: white;
+        width: 100%;
     }
 
-    main {
-        margin-top: 2em;
-    }
+   
 
     h1, h2, h3 {
         margin: 0;
+    }
+
+    p {
+        font-size: .7rem;
     }
 
     .popup img {

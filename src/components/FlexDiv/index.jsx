@@ -13,6 +13,4 @@ justify-content: ${props => props.justify};
 align-items: ${props => props.align}
 `
 
-
-
 export default FlexDiv

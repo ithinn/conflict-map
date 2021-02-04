@@ -31,7 +31,7 @@ function Header() {
             <PageTitle>Konflikt</PageTitle>
             <UlBase>
                 <LiBase>
-                    <Link to="/">Datavisualisering</Link>
+                    <Link to="/viz">Datavisualisering</Link>
                 </LiBase>
                 <LiBase>
                     <Link to="/map">Kart</Link>

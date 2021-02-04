@@ -24,7 +24,8 @@ function MapContainer() {
     const [operationsMarkers, setOperationsMarkers] = useState([])
     const [conflictsMarkers, setConflictsMarkers] = useState([])
     const [isInfo, setIsInfo] = useState(null);
-
+    const [conflictCB, setConflictCB] = useState(true)
+    const [operationsCB, setOperationsCB] = useState(true)
     function checkBoxes() {
 
     }
@@ -176,10 +177,10 @@ function MapContainer() {
                             }
 
                             geoData = item.metadata.data;
-            
+                            
                             map.addSource("pol", {
                                 'type': 'geojson',
-                                'data': geoData
+                                'data': geoData,
                             })
                             .addLayer({
                                 id: 'country',
@@ -190,7 +191,57 @@ function MapContainer() {
                                     'fill-color': 'rgba(200, 100, 240, 0.4)',
                                     'fill-outline-color': 'rgba(200, 100, 240, 1)'
                                 }
-                            })    
+                            }) 
+                            
+                            let secondData = item.metadata.second_polygon
+                            
+                         
+
+                            if (item.metadata.second_polygon !== undefined) {
+                                console.log("den slår inn")
+                                map.addSource("pol2", {
+                                    'type': 'geojson',
+                                    'data': secondData
+                                })
+                                .addLayer({
+                                    id: 'country2',
+                                    type: 'fill',
+                                    source: 'pol2',
+                                    layout: {},
+                                    paint: {
+                                        'fill-color': 'rgba(100, 196, 240, 0.4)',
+                                        'fill-outline-color': '#64dbf0'
+                                    }
+                                })
+                                
+
+                                /*
+                                let pop = new Mapbox.Popup({
+                                    closeButton: false,
+                                    closeOnClick: false
+                                });
+
+                                map.on("mouseenter", "country2", function(e) {
+                                   
+                                    map.getCanvas().style.cursor = "pointer";
+                                    
+                                    let coordinates = e.features[0].geometry.coordinates.slice();
+                                    let description = e.features[0].properties.description;
+/*
+                                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                                        }
+
+                                    pop.setLngLat(coordinates).setHTML(description).addTo(map);
+
+                                })
+
+                                map.on("mouseleave", "country2", function () {
+                                    map.getCanvas().style.cursor = "";
+                                    popUp.remove();
+                                })*/
+                                
+                            }
                             }
 
                             
@@ -217,10 +268,12 @@ function MapContainer() {
                 list.forEach(item => {
                   item.style.visibility = "hidden"
                 })
+                setOperationsCB(false)
             } else {
                 list.forEach(item => {
                     item.style.visibility = "visible"
                   })
+                setOperationsCB(true);
             }
           
         } else if (event.target.id === "conflicts") {
@@ -229,10 +282,12 @@ function MapContainer() {
                 list.forEach(item => {
                     item.style.visibility = "hidden"
             })
+            setConflictCB(false);
             } else {
                 list.forEach(item => {
                     item.style.visibility = "visible"
                 })
+                setConflictCB(true);
             }    
     }}
 
@@ -244,8 +299,11 @@ function MapContainer() {
             center: [6.37, 20.56],
             zoom: 1
         })
-        //map.removeLayer('country');
-        //map.removeSource('pol');
+        
+        map.removeLayer('country');
+        map.removeSource('pol');
+        geoData = null;
+        
     }
 
     function renderSkeleton() {
@@ -256,7 +314,7 @@ function MapContainer() {
     
     function renderPage() {
         return(<>
-            <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} />
+            <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} conflictCB={conflictCB} operationsCB={operationsCB} />
             <MapWrapper ref={mapElement} />
             </>
         )
