@@ -64,7 +64,7 @@ function MapContainer() {
 
         conflicts.getObjects({
             type: 'conflicts',
-            limit: 12,
+            limit: "20",
             props: 'slug,title,metadata',
             sort: 'created_at'
         })

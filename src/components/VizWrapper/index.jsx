@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Viz from "../../components/Viz"
+import BattleDeaths from "../BattleDeaths"
+import RefugeesTime from "../RefugeesTime"
 import { ImCircleDown } from "react-icons/im";
 import { IconContext } from "react-icons/lib";
 //import { IconContext } from "react-icons/lib";
@@ -13,20 +14,25 @@ display: flex;
 flex-direction: column;
 justify-content: flex-start;
 align-items: center;
+padding: 2em;
 
 `
+function handleClickArrow(event) {
+   /* scrollToComponent(secondViz, {
+        duration: 1500
+    }
+    )*/
 
+    console.log("klikk")
+}
 
-function VizWrapper({chartState, handleArrow, ref}) {
+function VizWrapper( {name} ) {
     return(
         <VizWrapperBase>
-            <Viz chartState={chartState}/>
-        
+            {name === "BattleDeaths" ? <BattleDeaths/> : <RefugeesTime/>}
             <IconContext.Provider value={{size: "2rem"}}>
-                <ImCircleDown onClick={handleArrow}/>
+                <ImCircleDown onClick={handleClickArrow}/>
             </IconContext.Provider>
-            
-   
         </VizWrapperBase>
     )
 }
