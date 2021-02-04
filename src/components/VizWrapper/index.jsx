@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Viz from "../../components/Viz"
 import { ImCircleDown } from "react-icons/im";
+import { IconContext } from "react-icons/lib";
 //import { IconContext } from "react-icons/lib";
 
 const VizWrapperBase = styled.section`
@@ -16,14 +17,14 @@ align-items: center;
 `
 
 
-function VizWrapper({chartState}) {
+function VizWrapper({chartState, handleArrow, ref}) {
     return(
         <VizWrapperBase>
             <Viz chartState={chartState}/>
         
-            <div>
-            <ImCircleDown />
-            </div>
+            <IconContext.Provider value={{size: "2rem"}}>
+                <ImCircleDown onClick={handleArrow}/>
+            </IconContext.Provider>
             
    
         </VizWrapperBase>

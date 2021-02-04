@@ -45,6 +45,7 @@
     "react-icons": "^4.1.0",
     "react-plotly.js": "^2.5.1",
     "react-router-dom": "^5.2.0",
+    "react-scroll-to-component": "^1.0.2",
     "styled-components": "^5.2.1"
   }
 }

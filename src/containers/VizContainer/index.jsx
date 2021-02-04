@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import VizWrapper from "../../components/VizWrapper"
+import scrollToComponent from "react-scroll-to-component";
 
+let colorList = [];
 
 const onlyYearUnique = (value, index, self) => {
     return self.indexOf(value) === index;
@@ -16,11 +18,8 @@ function getRandomColor() {
     return color;
 }
 
-let colorList = [];
 
 function VizContainer() {
-
-    
 
     const [chartState, setChartState] = useState({
         data: [],
@@ -163,11 +162,20 @@ function VizContainer() {
         })
       }, [])
 
+      const firstViz = useRef();
+      const secondViz = useRef();
+
+      function handleClickArrow(event) {
+        scrollToComponent(secondViz, {
+            duration: 1500
+        }
+        )
+      }
 
     return(
         <main>
-            
-            <VizWrapper chartState={chartState} />
+            <VizWrapper chartState={chartState} handleArrow={handleClickArrow} ref={firstViz} />
+            <VizWrapper chartState={chartState} handleArrow={handleClickArrow} ref={secondViz}/>
         </main>
     )
 }
