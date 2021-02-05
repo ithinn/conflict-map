@@ -17,21 +17,14 @@ align-items: center;
 padding: 2em;
 
 `
-function handleClickArrow(event) {
-   /* scrollToComponent(secondViz, {
-        duration: 1500
-    }
-    )*/
 
-    console.log("klikk")
-}
 
-function VizWrapper( {name} ) {
+function VizWrapper( {func, comp} ) {
     return(
         <VizWrapperBase>
-            {name === "BattleDeaths" ? <BattleDeaths/> : <RefugeesTime/>}
+            {comp}
             <IconContext.Provider value={{size: "2rem"}}>
-                <ImCircleDown onClick={handleClickArrow}/>
+                <ImCircleDown onClick={func}/>
             </IconContext.Provider>
         </VizWrapperBase>
     )

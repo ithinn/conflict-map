@@ -8,7 +8,7 @@ const onlyYearUnique = (value, index, self) => {
     return self.indexOf(value) === index;
 }
 
-function getRandomColor() {
+export function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
     for (let i = 0; i < 6; i++) {
@@ -46,10 +46,11 @@ function BattleDeaths() {
             traces.push({
               x: [],
               y: [],
-              text: [],
+              text: "fdsf",
               name: item.battle_location,
               type: 'bar',
-              hovertemplate: "%{name} Antall drepte: %{y} (%{x})" 
+              hovertemplate: " Antall drepte: %{y} (%{x})" 
+
             })
             });
     
@@ -87,6 +88,7 @@ function BattleDeaths() {
           const withoutDuplicates = Array.from(new Set(traces.map(a => a.name))).map(name => {
             return traces.find(a => a.name === name);
           })
+  
 
           let layout = {
             width: 900,
@@ -104,7 +106,7 @@ function BattleDeaths() {
                 }
                 }
             },
-            colorway: `${colorList}`,
+            colorway: colorList,
             hovermode: 'closest',
             hoverlabel: {
                 'font': {
@@ -152,6 +154,7 @@ function BattleDeaths() {
         })
         .catch(error => {
           console.log(error)
+          alert("Serveren er ødelagt, bare vent litt");
         })
       }, [])
     
