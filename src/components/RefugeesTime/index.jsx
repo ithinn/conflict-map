@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import refugeeData from "../../../data/refugeeData.json";
+import Skeleton from "../Skeleton";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import HC_more from 'highcharts/highcharts-more' //module
@@ -9,7 +10,6 @@ HC_more(Highcharts);
 const Container = styled.div`
     width: 90%;
     height: 100vh;
-
     margin: 0 auto;
 `
 
@@ -20,53 +20,8 @@ function formatValue(string) {
 
 function RefugeesTime() {
 
-    const [options, setOptions] = useState(
-        {
-        title: {
-            text: 'Hvilke land har flest mennesker på flukt?'
-        },
-        colors: ['orange', 'red', 'green', 'blue', 'gray', 'purple', 'pink', 'lightblue', 'marine'],
-        tooltip: {
-            useHTML: true,
-            pointFormat: '<b>{point.name}:</b> {point.value} på flukt'
-        },
-        chart: {
-            type: 'packedbubble',
-            height: '50%',
-            backgroundColor:"#f9f9f8",
-           
-        },
-        legend: {
-            floating: false,
-        },
-        plotOptions: {
-            packedbubble: {
-                minSize: '30%',
-                maxSize: '400%',
-                layoutAlgorithm: {
-                    splitSeries: false,
-                    gravitationalConstant: 0.02,
-                    initialPositions: "circle",
-                    
-                },
-
-                dataLabels: {
-                    enabled: false,
-                    format: '{point.name}',
-                    filter: {
-                        property: 'y',
-                        operator: '>=',
-                        value: 200
-                    },
-                    style: {
-                        color: 'black',
-                        textOutline: 'none',
-                        fontWeight: 'normal',
-                    }
-                }
-            }
-        }
-    })
+    const [options, setOptions] = useState(null)
+        
         
     useEffect(() => {
 
@@ -105,7 +60,7 @@ function RefugeesTime() {
         refugeeData.body.forEach((item, index) => {
 
             let nameValue = {
-                name: item[2].replace(/[^a-zæøåA-ZÆØÅ.-]/g, ""),
+                name: item[2].replace(/[^a-zæøåA-ZÆØÅ.-\s]/g, ""),
                 value: formatValue(item[3]) + formatValue(item[5])
             }
 
@@ -117,11 +72,49 @@ function RefugeesTime() {
             }
         })
 
-        let newOptions = {
-            ...options,
+        let newOptions = 
+        {
+            title: {
+                text: 'Hvilke land har flest mennesker på flukt?'
+            },
+            colors: ['orange', 'red', 'green', 'blue', 'gray', 'purple', 'pink', 'lightblue', 'marine'],
+            tooltip: {
+                useHTML: true,
+                pointFormat: '<b>{point.name}:</b> {point.value} på flukt'
+            },
+            chart: {
+                type: 'packedbubble',
+                height: '50%',
+                backgroundColor:"#f9f9f8",
+            },
+            plotOptions: {
+                packedbubble: {
+                    minSize: '30%',
+                    maxSize: '400%',
+                    layoutAlgorithm: {
+                        splitSeries: false,
+                        gravitationalConstant: 0.02,
+                        initialPositions: "circle",
+                    },
+                    dataLabels: {
+                        enabled: false,
+                        format: '{point.name}',
+                        filter: {
+                            property: 'y',
+                            operator: '>=',
+                            value: 200
+                        },
+                        style: {
+                            color: 'black',
+                            textOutline: 'none',
+                            fontWeight: 'normal',
+                        }
+                    }
+                }
+            },
             series: [...series]
         } 
-
+       
         setOptions(newOptions);
 
     }, [])
@@ -129,17 +122,35 @@ function RefugeesTime() {
     
 
 
-
+  
+  
+    function renderSkeleton() {
+        console.log("skeleton rendered ref")
+        return( 
+          <Skeleton
+            width="96vw" 
+            height="100vh" 
+            widthBox="70%" 
+            heightBox="70vh" 
+           />
+        )
+    }
+    
+    function renderPage() {
+        console.log("page-rendered-ref")
+        return(
+        <Container>
+            <HighchartsReact 
+            highcharts={Highcharts}
+            options={options}
+            />
+        </Container>)
+    }
 
 
     return(<>
       
-    <Container>
-    <HighchartsReact 
-        highcharts={Highcharts}
-        options={options}
-    />
-    </Container>
+      {(options === null) ? renderSkeleton() : renderPage()}
 
     </>)
 }

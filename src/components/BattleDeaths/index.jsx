@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Plot from "react-plotly.js";
+import Skeleton from "../Skeleton/";
 
 let colorList = [];
 
@@ -19,14 +20,7 @@ export function getRandomColor() {
 
 function BattleDeaths() {
 
-    const [chartState, setChartState] = useState({
-        data: [],
-        layout: {},
-        frames: [],
-        config: {
-            responsive: true
-        }    
-    })
+    const [chartState, setChartState] = useState(null)
 
     //Stacked bar - Battle deaths
     useEffect(() => {
@@ -144,9 +138,13 @@ function BattleDeaths() {
     
           //Forbereder oppdatering av state
           let newChartState = {
-            ...chartState, 
+            //...chartState, 
             data: [...withoutDuplicates],
             layout: layout,
+            frames: [],
+            config: {
+              responsive: true
+            } 
           };
      
           //Setter state med dataen vi har hentet ut. 
@@ -158,7 +156,22 @@ function BattleDeaths() {
         })
       }, [])
     
-    return(
+    function renderSkeleton() {
+      console.log("skeleton rendered")
+      return( 
+        <Skeleton
+          width="96vw" 
+          height="100vh" 
+          widthBox="70%" 
+          heightBox="70vh" 
+         />
+      )
+    } 
+
+    function renderPage() {
+      console.log("Page rendered")
+      return(
+
         <>
             <Plot
             data={chartState.data}
@@ -169,10 +182,19 @@ function BattleDeaths() {
             onUpdate={(figure) => setChartState(figure)} />
         </>
         )
+    }
+
+    return(
+        <>
+        {(chartState === null) ? renderSkeleton() : renderPage()}
+          
+          
+        </>
+        )
 }
 
 export default BattleDeaths;
-
+//
 
 
       

@@ -3,6 +3,7 @@ import Mapbox from "mapbox-gl";
 import styled from "styled-components";
 import Cosmic from "cosmicjs";
 import InfoBox from "../../components/InfoBox";
+import Skeleton from "../../components/Skeleton";
 
 let map = null;
 let popUp = null;
@@ -12,7 +13,7 @@ let geoData = null;
 
 const MapWrapper = styled.div`
     width: 96vw;
-    height: 500px;
+    height: 90vh;
     margin: 0 auto;
 `
 
@@ -308,7 +309,16 @@ function MapContainer() {
 
     function renderSkeleton() {
         return(
-            <p>loading</p>
+            <Skeleton 
+            width="96vw" 
+            height="90vh" 
+            widthBox="12em" 
+            heightBox="3em" 
+            leftBox="2em" 
+            topBox="0" 
+            marginBox="1em 0">
+
+        </Skeleton>
         )
     }
     
@@ -322,9 +332,13 @@ function MapContainer() {
 
     return(
         <>
-            {(operationsData === null) ? renderSkeleton() : renderPage()}
+        {(operationsData === null) ? renderSkeleton() : renderPage()}
+     
         </>
     )
 }
 
 export default MapContainer;
+
+//
+        

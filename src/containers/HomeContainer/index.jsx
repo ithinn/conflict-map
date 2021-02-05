@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Button from "../../components/Button";
-import BubbleContainer from "../BubbleContainer";
+import MapContainer from "../MapContainer";
 
 function HomeContainer() {
 
@@ -11,8 +11,8 @@ function HomeContainer() {
     return(
         <main>
 
-            <h2>Home container content</h2>
-            <BubbleContainer/>
+            <MapContainer />
+        
         </main>
         
     )
