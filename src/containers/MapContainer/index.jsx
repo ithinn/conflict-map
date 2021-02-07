@@ -4,10 +4,12 @@ import styled from "styled-components";
 import Cosmic from "cosmicjs";
 import InfoBox from "../../components/InfoBox";
 import Skeleton from "../../components/Skeleton";
+import Button from "../../components/Button"
 
 let map = null;
 let popUp = null;
 let geoData = null;
+let secondData = null;
 
 
 
@@ -113,6 +115,7 @@ function MapContainer() {
                         <img src=${item.metadata.header_img.url} />
                         <h3>${item.title}</h3>
                         <p>${item.metadata.location}</p>
+                        <p class="popupDate">Etablert i ${item.metadata.started.slice(0,4)}</p>
                     `)
               
                     setOperationsMarkers(prev => [...prev, new Mapbox.Marker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).setPopup(popUp).addTo(map)])
@@ -122,6 +125,7 @@ function MapContainer() {
 
             // Markers for conflicts
             if (conflictData !== null) {
+
 
                 //Workarount - create markers with click-event class
                 class ClickableMarker extends Mapbox.Marker {
@@ -152,103 +156,100 @@ function MapContainer() {
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
 
-                    let html = `
-                    
+                    let htmlLegend =  `
                     <h2>${item.title}</h2>
                     <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
-                    <p><strong>Parter: </strong>${item.metadata.parties}
-                    <p>${item.metadata.description}
+                    <p><strong>Parter:</strong>${item.metadata.parties}</p>
+        
+                    <div class="legend-wrapper">
+                        <div class="pol-wrapper">
+                            <div class="polygon1"></div>
+                            <p>${item.metadata.polygon1_text}</p>
+                        </div>
+
+                        <div class="pol-wrapper">
+                            <div class="polygon2"></div>
+                            <p>${item.metadata.polygon2_text}</p>
+                        </div>
+                    </div>
+
+                    <p>${item.metadata.description}</p>
                     <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
                     `
                     
-                    setConflictsMarkers(prev => [...prev, new ClickableMarker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).onClick(() => {
+                    let html = 
+                    `
+                    <h2>${item.title}</h2>
+                    <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
+                    <p><strong>Parter: </strong>${item.metadata.parties}</p>
+                    <p>${item.metadata.description}</p>
+                    <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
+                    `
+
+                    
+                    setConflictsMarkers(prev => [...prev, new ClickableMarker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).onClick((event) => {
                             
+                        if (item.metadata.second_polygon !== "" && item.metadata.second_polygon !== undefined) {
+                            document.querySelector(".infowrap").innerHTML = htmlLegend;
+                        } else {
                             document.querySelector(".infowrap").innerHTML = html;
-                            setIsInfo(true);
+                        }
+                   
+                        setIsInfo(true);
 
-                            map.flyTo({
-                                center: [item.metadata.longitude, item.metadata.latitude],
-                                zoom: `${item.metadata.zoom_level ? item.metadata.zoom_level : 3}`
-                            })
+                        map.flyTo({
+                            center: [item.metadata.longitude, item.metadata.latitude],
+                            zoom: `${item.metadata.zoom_level ? item.metadata.zoom_level : 3}`
+                        })
                          
-                            //removes existing layers and sources if a conflict marker has been clicked on earlier
-                            if (geoData !== null) {
-                                map.removeLayer('country');
-                                map.removeSource('pol');
-                            }
+                        //removes existing layers and sources if a conflict marker has been clicked earlier
+                        if (geoData !== null) {
+                            map.removeLayer('country');
+                            map.removeSource('pol');
+                        }
 
-                            geoData = item.metadata.data;
+                        geoData = item.metadata.data;
                             
-                            map.addSource("pol", {
+                        map.addSource("pol", {
+                            'type': 'geojson',
+                            'data': geoData,
+                        })
+                        .addLayer({
+                            id: 'country',
+                            type: 'fill',
+                            source: 'pol',
+                            layout: {},
+                            paint: {
+                                'fill-color': 'rgba(200, 100, 240, 0.4)',
+                                'fill-outline-color': 'rgba(200, 100, 240, 1)'
+                            }
+                        }) 
+
+                        if (secondData !== null) {
+                            map.removeLayer('country2');
+                            map.removeSource('pol2');
+                        }
+                            
+                        secondData = item.metadata.second_polygon;
+                            
+                        if (item.metadata.second_polygon !== undefined) {
+                              
+                            map.addSource("pol2", {
                                 'type': 'geojson',
-                                'data': geoData,
+                                'data': secondData
                             })
                             .addLayer({
-                                id: 'country',
+                                id: 'country2',
                                 type: 'fill',
-                                source: 'pol',
+                                source: 'pol2',
                                 layout: {},
                                 paint: {
-                                    'fill-color': 'rgba(200, 100, 240, 0.4)',
-                                    'fill-outline-color': 'rgba(200, 100, 240, 1)'
+                                    'fill-color': 'rgba(100, 196, 240, 0.4)',
+                                    'fill-outline-color': '#64dbf0'
                                 }
-                            }) 
-                            
-                            let secondData = item.metadata.second_polygon
-                            
-                         
-
-                            if (item.metadata.second_polygon !== undefined) {
-                                console.log("den slår inn")
-                                map.addSource("pol2", {
-                                    'type': 'geojson',
-                                    'data': secondData
-                                })
-                                .addLayer({
-                                    id: 'country2',
-                                    type: 'fill',
-                                    source: 'pol2',
-                                    layout: {},
-                                    paint: {
-                                        'fill-color': 'rgba(100, 196, 240, 0.4)',
-                                        'fill-outline-color': '#64dbf0'
-                                    }
-                                })
-                                
-
-                                /*
-                                let pop = new Mapbox.Popup({
-                                    closeButton: false,
-                                    closeOnClick: false
-                                });
-
-                                map.on("mouseenter", "country2", function(e) {
-                                   
-                                    map.getCanvas().style.cursor = "pointer";
-                                    
-                                    let coordinates = e.features[0].geometry.coordinates.slice();
-                                    let description = e.features[0].properties.description;
-/*
-                                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                                        }
-
-                                    pop.setLngLat(coordinates).setHTML(description).addTo(map);
-
-                                })
-
-                                map.on("mouseleave", "country2", function () {
-                                    map.getCanvas().style.cursor = "";
-                                    popUp.remove();
-                                })*/
-                                
-                            }
-                            }
-
-                            
-
-
-                        ).addTo(map)])//set ferdig
+                            })  
+                        }
+                    }).addTo(map)])//set ferdig
                 })
             }
         })
@@ -292,18 +293,32 @@ function MapContainer() {
             }    
     }}
 
+
+
     function handleCloseIcon(event) {
         console.log(event.target);
         document.querySelector(".infowrap").innerHTML = ""
         setIsInfo(false);
+
         map.flyTo({
             center: [6.37, 20.56],
             zoom: 1
         })
         
-        map.removeLayer('country');
-        map.removeSource('pol');
-        geoData = null;
+        
+        if (geoData !== null) {
+            map.removeLayer('country');
+            map.removeSource('pol');
+            geoData = null;
+
+        }
+
+        if (secondData !== null) {
+            map.removeLayer('country2');
+            map.removeSource('pol2');
+            secondData = null;
+        }
+        
         
     }
 
@@ -324,7 +339,8 @@ function MapContainer() {
     
     function renderPage() {
         return(<>
-            <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} conflictCB={conflictCB} operationsCB={operationsCB} />
+            
+            <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} conflictCB={conflictCB} operationsCB={operationsCB} refreshMap={handleCloseIcon} />
             <MapWrapper ref={mapElement} />
             </>
         )

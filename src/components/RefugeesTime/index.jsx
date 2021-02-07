@@ -9,7 +9,7 @@ HC_more(Highcharts);
 
 const Container = styled.div`
     width: 90%;
-    height: 100vh;
+    height: 90vh;
     margin: 0 auto;
 `
 
@@ -85,7 +85,7 @@ function RefugeesTime() {
             chart: {
                 type: 'packedbubble',
                 height: '50%',
-                backgroundColor:"#f9f9f8",
+                backgroundColor:"blue",
             },
             plotOptions: {
                 packedbubble: {

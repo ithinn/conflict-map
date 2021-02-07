@@ -1,18 +1,31 @@
 import React from "react";
 import styled from "styled-components";
+import { FiRefreshCw } from "react-icons/fi";
 
 
 const ButtonBase = styled.button`
   font-size: 1rem;
-  background-color: blue;
-  color: white;
+  background: white;
+  color: #333;
   padding: .5em;
   margin-left: .5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none; 
   
+  &:hover {
+    background: rgba(0, 0, 0, 0.5);
+  }
 `
-function Button( {children} ) {
+
+
+function Button( {onClick, children} ) {
     return(
-        <ButtonBase> {children} </ButtonBase>
+        <ButtonBase onClick={onClick}> 
+          <FiRefreshCw/>
+         
+        </ButtonBase>
     )
 }
 

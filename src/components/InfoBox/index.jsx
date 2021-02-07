@@ -11,16 +11,18 @@ const InfoBoxBase = styled.article`
     background-color: white;
     width: 12em;
     height: auto;
+    max-height: 80vh;
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     padding: .5em;
     margin-top: 1em;
     left: 2em;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
-
+    overflow-y: scroll;
     
 `
 
@@ -47,11 +49,10 @@ width: 40px;
 display: flex;
 justify-content: flex-end;
 height: auto;
-background: lightgray;
+background: darkgrey;
 border: 1px darkgrey solid;
 border-radius: 10em;
 margin-right: 1em;
-
 box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.25);
 `
 
@@ -72,25 +73,26 @@ const IconImage = styled.img`
 const InvisibleCheckbox = styled.input`
 height: 1px;
 width: 1px;
-&:checked ~ label {
-    
-}
 
 `
 
-function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB }) {
+function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMap }) {
     
 
     return(
         <InfoBoxBase>
+            <Button onClick={refreshMap}/>
             <FlexDiv width="96%" height="auto" direction="column">
                 
                 <div>
                 <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts"></InvisibleCheckbox>
                 <LabelAsButton htmlFor="conflicts">
-                    {conflictCB ? <ImgDiv>
+                    {conflictCB ? 
+                    <ImgDiv>
                         <IconImage src={confIcon} />
-                    </ImgDiv> : <ImgDivOff>
+                    </ImgDiv> 
+                    : 
+                    <ImgDivOff>
                         <IconImage src={confIcon} />
                     </ImgDivOff>}
                     
@@ -102,9 +104,12 @@ function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB }) {
                 <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations"></InvisibleCheckbox>
                 <LabelAsButton htmlFor="operations">
                     
-                    {operationsCB ? <ImgDiv>
+                    {operationsCB ? 
+                    <ImgDiv>
                         <IconImage src={opIcon} />
-                    </ImgDiv> : <ImgDivOff>
+                    </ImgDiv> 
+                    : 
+                    <ImgDivOff>
                         <IconImage src={opIcon} />
                     </ImgDivOff>}
                     

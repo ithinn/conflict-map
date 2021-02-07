@@ -85,8 +85,16 @@ function BattleDeaths() {
   
 
           let layout = {
-            width: 900,
-            height: 400,
+            width: 750,
+            height: 320,
+            margin: {
+              'l': 40,
+              'b': 40,
+              't': 50,
+              'r': 40,
+            },
+
+            pad: 20,
             title: "Antall drepte i konflikter",
             legend: {
                 'title': {
@@ -96,9 +104,12 @@ function BattleDeaths() {
                 'xanchor': "right",
                 'font': {
                   'family': 'Roboto, sans-serif',
-                  'size': '15'
+                  'size': '10'
                 }
-                }
+                },
+              'font': {
+                'size': '10'
+              } 
             },
             colorway: colorList,
             hovermode: 'closest',
@@ -110,29 +121,34 @@ function BattleDeaths() {
                 },    
             },
             barmode: 'stack',
-            paper_bgcolor: "#f9f9f8",
-            plot_bgcolor: "#f9f9f8",
+            paper_bgcolor: '#f9f9f8',
+            plot_bgcolor: '#f9f9f8',
             xaxis: {
                 title: {
                   text: 'Årstall',
                   type: 'date',
                   font: {
                     family: 'Arial, monospace',
-                    size: 15,
+                    size: 10,
                     color: '#7f7f7f'
                   }
                 },
+                tickfont: {
+                  size: 10,
+                }
             },
             yaxis: {
                 title: {
                   text: 'Antall drepte',
-    
                   font: {
                     family: 'Arial, monospace',
-                    size: 15,
+                    size: 10,
                     color: '#7f7f7f'
                   }
                 },
+                tickfont: {
+                  size: 10,
+                }
             },
         };
     
@@ -157,7 +173,7 @@ function BattleDeaths() {
       }, [])
     
     function renderSkeleton() {
-      console.log("skeleton rendered")
+  
       return( 
         <Skeleton
           width="96vw" 
@@ -169,7 +185,6 @@ function BattleDeaths() {
     } 
 
     function renderPage() {
-      console.log("Page rendered")
       return(
 
         <>

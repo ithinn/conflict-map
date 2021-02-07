@@ -8,24 +8,28 @@ import { IconContext } from "react-icons/lib";
 
 const VizWrapperBase = styled.section`
 width: 100%;
-height: 100vh;
+height: 90vh;
 background: #f9f9f8;
 display: flex;
 flex-direction: column;
 justify-content: flex-start;
 align-items: center;
-padding: 2em;
+
+scroll-snap-align: center;
+border: 1px solid red;
 
 `
 
 
-function VizWrapper( {func, comp} ) {
+function VizWrapper( {func, comp, id} ) {
     return(
         <VizWrapperBase>
             {comp}
-            <IconContext.Provider value={{size: "2rem"}}>
-                <ImCircleDown onClick={func}/>
-            </IconContext.Provider>
+            <a href={id}>
+                <IconContext.Provider value={{size: "2rem"}}>
+                    <ImCircleDown onClick={func}/>
+                </IconContext.Provider>
+            </a>
         </VizWrapperBase>
     )
 }

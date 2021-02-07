@@ -18,8 +18,8 @@ function VizContainer() {
 
     return(
         <main>
-            <VizWrapper name="BattleDeaths" func={handleClickArrow} comp={<BattleDeaths/>} />
-            <VizWrapper name="RefugeesTime" func={handleClickArrow} comp={<RefugeesTime/>} />   
+            <VizWrapper id="BattleDeaths" func={handleClickArrow} comp={<BattleDeaths/>} />
+            <VizWrapper id="RefugeesTime" func={handleClickArrow} comp={<RefugeesTime/>} />   
         </main>
     )
 }
