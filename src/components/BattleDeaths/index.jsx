@@ -92,8 +92,8 @@ function BattleDeaths() {
             autosize: true,
             margin: {
               'l': 100,
-              'b': 80,
-              't': 80,
+              'b': 100,
+              't': 100,
               'r': 100,
             },
 
@@ -103,7 +103,6 @@ function BattleDeaths() {
               font: {
                 'family': "Arial",
                 'size': "35",
-    
               }
             },
             legend: {

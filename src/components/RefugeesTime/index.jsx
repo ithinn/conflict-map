@@ -56,6 +56,7 @@ function RefugeesTime() {
             },
 
         ]
+        console.log(refugeeData.body);
 
         refugeeData.body.forEach((item, index) => {
 
@@ -107,12 +108,12 @@ function RefugeesTime() {
                         initialPositions: "circle",
                     },
                     dataLabels: {
-                        enabled: false,
+                        enabled: true,
                         format: '{point.name}',
                         filter: {
                             property: 'y',
                             operator: '>',
-                            value: 250
+                            value: 1000000
                         },
                         style: {
                             color: 'black',

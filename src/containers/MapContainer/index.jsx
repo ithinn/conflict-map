@@ -4,13 +4,12 @@ import styled from "styled-components";
 import Cosmic from "cosmicjs";
 import InfoBox from "../../components/InfoBox";
 import Skeleton from "../../components/Skeleton";
-import Button from "../../components/Button"
+
 
 let map = null;
 let popUp = null;
 let geoData = null;
 let secondData = null;
-
 
 
 const MapWrapper = styled.div`
@@ -19,7 +18,9 @@ const MapWrapper = styled.div`
     margin: 0 auto;
 `
 
+
 function MapContainer() {
+    
     const mapElement = useRef();
 
     const [operationsData, setOperationsData] = useState(null);
@@ -29,13 +30,14 @@ function MapContainer() {
     const [isInfo, setIsInfo] = useState(null);
     const [conflictCB, setConflictCB] = useState(true)
     const [operationsCB, setOperationsCB] = useState(true)
-    function checkBoxes() {
-
-    }
-
+ 
     Mapbox.accessToken = process.env.MAPBOX_API_KEY;
 
-    //Get data from Cosmic
+
+    //------------------------------------------------------
+    //GET DATA FROM COSMIC----------------------------------
+    //------------------------------------------------------
+
     useEffect(() => {
 
         //UN Peacekeeping operations
@@ -47,7 +49,7 @@ function MapContainer() {
 
         operations.getObjects({
             type: 'conflicts-copy-3667df10-621e-11eb-a47b-456a3acdd925',
-            limit: 12,
+            limit: 20,
             props: 'slug,title,metadata',
             sort: 'created_at'
         })
@@ -58,7 +60,7 @@ function MapContainer() {
             console.log(error);
         })
 
-        //Ongoing conflicts
+        //conflicts
         const clientConflict = new Cosmic()
         const conflicts = clientConflict.bucket({
             slug: process.env.BUCKET_SLUG,
@@ -81,9 +83,13 @@ function MapContainer() {
     }, []);
 
 
-    //Create the map
+    //----------------------------------------------------
+    //CREATE THE MAP -------------------------------------
+    //----------------------------------------------------
+
     useEffect(() => {
 
+        //Makes sure the map is only loaded if the data is fetched and ready
         if (conflictData !== null) {
  
         map = new Mapbox.Map({
@@ -93,8 +99,11 @@ function MapContainer() {
         })
         .on("load", () => {
             let el;
-            //Markers for operations
+
+            //Creates markers for UN operations
+
             if (operationsData !== null) {
+
                 operationsData.objects.map(item => {
                     el = document.createElement('div');
                     el.classList.add("operations-marker")
@@ -119,15 +128,23 @@ function MapContainer() {
                     `)
               
                     setOperationsMarkers(prev => [...prev, new Mapbox.Marker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).setPopup(popUp).addTo(map)])
-
+                    
                 })
             }
 
-            // Markers for conflicts
+            // Creates markers for conflicts
             if (conflictData !== null) {
 
 
-                //Workarount - create markers with click-event class
+                //I want to add a click-event to the conflict markers in order to zoom in on the area, and render a polygon.
+                //However, you can't make a click-event to a marker, unless you're adding a popup. (For some reason).
+                //Therefore:
+                //I extend the Marker class.   
+                //Marker already has an internal method _onMapClick, which is used by the popup functionality. 
+                //The extension adds the method "onMapClick."" onMapClick takes a function and can be chained with other methods.
+                //It also overrides _onMapClick to trigger _handleClick if it exists. 
+
+
                 class ClickableMarker extends Mapbox.Marker {
                     onClick(handleClick) {
                         this._handleClick = handleClick;
@@ -144,7 +161,8 @@ function MapContainer() {
                     }
                 };
 
-           
+                
+                //Loops through all objects in conflictData
                 conflictData.objects.forEach(item => {
                     
                     //styling for custom marker
@@ -158,58 +176,63 @@ function MapContainer() {
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
 
+
+                    //When a conflict marker is clicked, information about the conflict will appear in the InfoBox.
+                    //If a conflict object has TWO polygons, it needs a legend to tell what the different areas are.
+                    //Therefore, there are two versions of the html that is rendered inside the InfoBox - one with a legend, and one without. 
+
                     let htmlLegend =  `
-                    <h2>${item.title}</h2>
-                    <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
-                    <p><strong>Parter:</strong>${item.metadata.parties}</p>
-        
-                    <div class="legend-wrapper">
-                        <div class="pol-wrapper">
-                            <div class="polygon1"></div>
-                            <p>${item.metadata.polygon1_text}</p>
-                        </div>
+                        <h2>${item.title}</h2>
+                        <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
+                        <p><strong>Parter:</strong>${item.metadata.parties}</p>
+                        <div class="legend-wrapper">
+                            <div class="pol-wrapper">
+                                <div class="polygon1"></div>
+                                <p>${item.metadata.polygon1_text}</p>
+                            </div>
 
-                        <div class="pol-wrapper">
-                            <div class="polygon2"></div>
-                            <p>${item.metadata.polygon2_text}</p>
+                            <div class="pol-wrapper">
+                                <div class="polygon2"></div>
+                                <p>${item.metadata.polygon2_text}</p>
+                            </div>
                         </div>
-                    </div>
-
-                    <p>${item.metadata.description}</p>
-                    <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
+                        <p>${item.metadata.description}</p>
+                        <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
                     `
                     
                     let html = 
                     `
-                    <h2>${item.title}</h2>
-                    <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
-                    <p><strong>Parter: </strong>${item.metadata.parties}</p>
-                    <p>${item.metadata.description}</p>
-                    <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
+                        <h2>${item.title}</h2>
+                        <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
+                        <p><strong>Parter: </strong>${item.metadata.parties}</p>
+                        <p>${item.metadata.description}</p>
+                        <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
                     `
 
-                    
-                    setConflictsMarkers(prev => [...prev, new ClickableMarker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).onClick((event) => {
-                            
+                    //The markers are created and saved in state. In the process, I define the content of the onClick method 
+                    setConflictsMarkers(prev => [...prev, new ClickableMarker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).onClick(() => {
+                        
+
+                        //Choses if "html" or "htmlLegend" will render based on whether there's data in the item's second_pologon-metafield
                         if (item.metadata.second_polygon !== "" && item.metadata.second_polygon !== undefined) {
                             document.querySelector(".infowrap").innerHTML = htmlLegend;
                         } else {
                             document.querySelector(".infowrap").innerHTML = html;
                         }
-                   
+                        
+
+                        //Declares that there is info in the InfoBox
                         setIsInfo(true);
 
+
+                        //Zooms in on the country/area where the conflict takes place.
                         map.flyTo({
                             center: [item.metadata.longitude, item.metadata.latitude],
                             zoom: `${item.metadata.zoom_level ? item.metadata.zoom_level : 3}`
                         })
 
 
-                         console.log(map.getLayer("country"));
-                         console.log(map.getLayer("country2"));
-                        //removes existing layers and sources if a conflict marker has been clicked earlier
-                       
-                       
+                        //Removes existing layers and sources if a conflict marker has been clicked earlier
                         if (map.getLayer("country") !== undefined) {
                             map.removeLayer('country');
                             map.removeSource('pol');
@@ -219,10 +242,14 @@ function MapContainer() {
                             map.removeLayer('country2');
                             map.removeSource('pol2');
                         }
-                    
+
+
+                        //Defines geoData and secondData based on the item's metadata-fields
                         geoData = item.metadata.data;
                         secondData = item.metadata.second_polygon;
-                   
+                        
+
+                        //Adds source and layer for the main polygon
                         map.addSource("pol", {
                             'type': 'geojson',
                             'data': geoData,
@@ -237,7 +264,9 @@ function MapContainer() {
                                 'fill-outline-color': 'rgba(200, 100, 240, 1)'
                             }
                         }) 
-   
+                        
+
+                        //Adds source and layer for the second polygon if it is defined. 
                         if (item.metadata.second_polygon !== undefined) {
                               
                             map.addSource("pol2", {
@@ -255,18 +284,21 @@ function MapContainer() {
                                 }
                             })  
                         }
-                    }).addTo(map)])//set ferdig
+                    }).addTo(map)])
                 })
             }
         })
-    
+
+
+    //Adds navigation control
     map.addControl( new Mapbox.NavigationControl({
         accessToken: process.env.MAPBOX_API_KEY
       }))
     }
     }, [operationsData, conflictData]);
-    
 
+  
+    //Shows/hides the markers based on the .checked status of the checkbox. 
     function handleCheckbox(event) {
         let list;
 
@@ -300,10 +332,11 @@ function MapContainer() {
     }}
 
 
-
-    function handleCloseIcon(event) {
-        console.log(event.target);
+    //Refreshes the map, empties the InfoBox, removes the polygons and zooms out
+    function refreshMap(event) {
+    
         document.querySelector(".infowrap").innerHTML = ""
+        
         setIsInfo(false);
 
         map.flyTo({
@@ -311,11 +344,9 @@ function MapContainer() {
             zoom: 2
         })
         
-        
         if (map.getLayer("country") !== undefined) {
             map.removeLayer('country');
             map.removeSource('pol');
-            
         }
 
         if (map.getLayer("country2") !== undefined) {
@@ -334,15 +365,14 @@ function MapContainer() {
             leftBox="2em" 
             topBox="0" 
             marginBox="1em 0">
-
-        </Skeleton>
+            </Skeleton>
         )
     }
     
     function renderPage() {
         return(
             <>
-                <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} conflictCB={conflictCB} operationsCB={operationsCB} refreshMap={handleCloseIcon} />
+                <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={refreshMap} conflictCB={conflictCB} operationsCB={operationsCB} refreshMap={refreshMap} />
                 <MapWrapper ref={mapElement} />
             </>
         )
@@ -357,5 +387,5 @@ function MapContainer() {
 
 export default MapContainer;
 
-//
+
         

@@ -68,6 +68,10 @@ const GlobalStyle = createGlobalStyle`
         font-size: 1rem;
     }
 
+    .mapboxgl-marker:hover {
+        cursor: pointer;
+      }
+
     .popup img {
         width: 96%;
     }

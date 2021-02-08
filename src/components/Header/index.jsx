@@ -28,6 +28,7 @@ export const LiBase = styled.li`
   padding-right: 2em;
   list-style-type: none;
   font-size: 1.5rem;
+ 
 `;
 
 function Header() {
@@ -41,10 +42,10 @@ function Header() {
             <NavBase>
             <UlBase>
                 <LiBase>
-                    <Link style={{ textDecoration: 'none' }} to="/viz">Datavisualisering</Link>
+                    <Link to="/viz">Datavisualisering</Link>
                 </LiBase>
                 <LiBase>
-                    <Link style={{ textDecoration: 'none' }} to="/">Kart</Link>
+                    <Link to="/">Kart</Link>
                 </LiBase>
             </UlBase>
             </NavBase>
