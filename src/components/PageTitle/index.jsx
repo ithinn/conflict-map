@@ -6,9 +6,11 @@ const PageTitle = styled.h1`
   color: #261c1b;
   text-transform: uppercase;
   font-weight: 900;
-  font-family: Roboto, sans-serif;
+  font-family: "Arial";
   letter-spacing: 2px;
   
 `
 
 export default PageTitle;
+
+"IBM Plex Mono";

@@ -10,28 +10,32 @@ const VizWrapperBase = styled.section`
 width: 100%;
 height: 90vh;
 background: #f9f9f8;
+margin-top: 3em;
 display: flex;
 flex-direction: column;
-justify-content: flex-start;
+justify-content: space-around;
 align-items: center;
-
 scroll-snap-align: center;
-border: 1px solid red;
 
 `
 
 
-function VizWrapper( {func, comp, id} ) {
+function VizWrapper( {func, comp, id, height} ) {
+
+   
+
     return(
-        <VizWrapperBase>
+        <VizWrapperBase id={id}>
             {comp}
-            <a href={id}>
-                <IconContext.Provider value={{size: "2rem"}}>
-                    <ImCircleDown onClick={func}/>
-                </IconContext.Provider>
-            </a>
+            
         </VizWrapperBase>
     )
 }
 
 export default VizWrapper;
+/*
+<a href={id === "battleDeaths" ? "#refugeesTime" : "#battleDeaths"}>
+                <IconContext.Provider value={{size: "3rem"}}>
+                    <ImCircleDown onClick={func}/>
+                </IconContext.Provider>
+            </a>*/

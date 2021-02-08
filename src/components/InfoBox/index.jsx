@@ -9,37 +9,40 @@ import opIcon from "../../img/Flags/un.png"
 
 const InfoBoxBase = styled.article`
     background-color: white;
-    width: 12em;
+    width: 20%;
+    min-width: 12em;
     height: auto;
     max-height: 80vh;
     position: absolute;
     z-index: 2;
     padding: .5em;
     margin-top: 1em;
-    left: 2em;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    left: 5%;
     box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
-    overflow-y: scroll;
-    
+    overflow-y: auto;
+    padding: 1em;
+    @media (min-width: 600px) {
+        
+    }
 `
 
+
 const LabelAsButton = styled.label`
-    font-size: .8rem;
-    
+    font-size: .9rem;
     padding: .3em .3em;
-    text-align: center;
+    text-align: left;
     display: flex;
     align-items: center;
     width: 100%;
     &:hover {
-        background: lightgray;
-        
+        background: lightgray; 
     }
     &:active{
         background: #593131;
+    }
+
+    @media (min-width: 1200px) {
+        font-size: 1.3rem;
     }
     
 `
@@ -62,6 +65,7 @@ background: #f9f9f8;
 
 `
 
+
 const IconImage = styled.img`
     width: 20px;
     height: 20px;
@@ -73,7 +77,6 @@ const IconImage = styled.img`
 const InvisibleCheckbox = styled.input`
 height: 1px;
 width: 1px;
-
 `
 
 function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMap }) {
@@ -82,56 +85,50 @@ function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMa
     return(
         <InfoBoxBase>
             <Button onClick={refreshMap}/>
-            <FlexDiv width="96%" height="auto" direction="column">
-                
-                <div>
-                <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts"></InvisibleCheckbox>
-                <LabelAsButton htmlFor="conflicts">
-                    {conflictCB ? 
-                    <ImgDiv>
-                        <IconImage src={confIcon} />
-                    </ImgDiv> 
-                    : 
-                    <ImgDivOff>
-                        <IconImage src={confIcon} />
-                    </ImgDivOff>}
-                    
-                    Konflikter
-                </LabelAsButton>
-                </div>
-                
-                <div>
-                <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations"></InvisibleCheckbox>
-                <LabelAsButton htmlFor="operations">
-                    
-                    {operationsCB ? 
-                    <ImgDiv>
-                        <IconImage src={opIcon} />
-                    </ImgDiv> 
-                    : 
-                    <ImgDivOff>
-                        <IconImage src={opIcon} />
-                    </ImgDivOff>}
-                    
-                    FN-operasjoner
-                </LabelAsButton>
-                </div>
-                
-               
-                
-                
-            </FlexDiv>
-
-            <FlexDiv width="100%" height="auto" direction="column" align="flex-end">
             
+            <div >
+                <div>
+                    <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts" />
+                    <LabelAsButton htmlFor="conflicts">
+                        {conflictCB ? 
+                        <ImgDiv>
+                            <IconImage src={confIcon} />
+                        </ImgDiv> 
+                        : 
+                        <ImgDivOff>
+                            <IconImage src={confIcon} />
+                        </ImgDivOff>}
+                        
+                        Konflikter
+                    </LabelAsButton>
+                </div>
+                
+                <div>
+                    <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations" />
+                    <LabelAsButton htmlFor="operations">
+                        
+                        {operationsCB ? 
+                        <ImgDiv>
+                            <IconImage src={opIcon} />
+                        </ImgDiv> 
+                        : 
+                        <ImgDivOff>
+                            <IconImage src={opIcon} />
+                        </ImgDivOff>}
+                        
+                        FN-operasjoner
+                    </LabelAsButton>
+                </div>
+                
+            </div>
+
+            <FlexDiv >
                 {isInfo ? 
-                <IconContext.Provider value={{size: "1rem"}}>
+                <IconContext.Provider value={{size: "2rem"}}>
                     <AiOutlineCloseCircle onClick={handleClose}/>
                 </IconContext.Provider> : null}
 
-                <FlexDiv width="100%" height="auto" direction="column" className="infowrap">
-
-                </FlexDiv>
+                <div className="infowrap"></div>
             </FlexDiv>
         </InfoBoxBase>
     )

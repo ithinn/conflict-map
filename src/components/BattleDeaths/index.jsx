@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Plot from "react-plotly.js";
 import Skeleton from "../Skeleton/";
+import Error from "../Error";
 
 let colorList = [];
 
@@ -82,20 +83,29 @@ function BattleDeaths() {
           const withoutDuplicates = Array.from(new Set(traces.map(a => a.name))).map(name => {
             return traces.find(a => a.name === name);
           })
+
+        //  width: 750,
+         // height: 320,
   
 
           let layout = {
-            width: 750,
-            height: 320,
+            autosize: true,
             margin: {
-              'l': 40,
-              'b': 40,
-              't': 50,
-              'r': 40,
+              'l': 100,
+              'b': 80,
+              't': 80,
+              'r': 100,
             },
 
             pad: 20,
-            title: "Antall drepte i konflikter",
+            title: {
+              text: "Antall drepte i konflikter",
+              font: {
+                'family': "Arial",
+                'size': "35",
+    
+              }
+            },
             legend: {
                 'title': {
                 'text': "Parter i konfliktene:",
@@ -103,20 +113,21 @@ function BattleDeaths() {
                 'x': "0.75",
                 'xanchor': "right",
                 'font': {
-                  'family': 'Roboto, sans-serif',
-                  'size': '10'
+                  'family': 'Arial, sans-serif',
+                  'size': '20'
                 }
                 },
               'font': {
-                'size': '10'
+                'size': '15',
+                'family': "Arial, sans-serif",
               } 
             },
             colorway: colorList,
             hovermode: 'closest',
             hoverlabel: {
                 'font': {
-                  'family': "Times New Roman",
-                  'size': 10,
+                  'family': "Arial",
+                  'size': 15,
                   'font': "#333333",
                 },    
             },
@@ -128,27 +139,29 @@ function BattleDeaths() {
                   text: 'Årstall',
                   type: 'date',
                   font: {
-                    family: 'Arial, monospace',
-                    size: 10,
+                    family: 'Arial',
+                    size: 15,
                     color: '#7f7f7f'
                   }
                 },
                 tickfont: {
-                  size: 10,
-                }
+                  size: 15,
+                },
+ 
             },
             yaxis: {
                 title: {
                   text: 'Antall drepte',
                   font: {
-                    family: 'Arial, monospace',
-                    size: 10,
+                    family: 'Arial',
+                    size: 15,
                     color: '#7f7f7f'
                   }
                 },
                 tickfont: {
-                  size: 10,
-                }
+                  size: 15,
+                },
+               // autorange: true,
             },
         };
     
@@ -167,8 +180,9 @@ function BattleDeaths() {
           setChartState(newChartState) 
         })
         .catch(error => {
-          console.log(error)
-          alert("Serveren er ødelagt, bare vent litt");
+          renderError();
+          alert("En serverfeil gjør at dataen ikke kan lastes inn. Prøv igjen om litt.")
+          console.log(error);
         })
       }, [])
     
@@ -189,6 +203,8 @@ function BattleDeaths() {
 
         <>
             <Plot
+            useResizeHandler
+            style={{width: "100%"}}
             data={chartState.data}
             layout={chartState.layout}
             frames={chartState.frames}
@@ -197,6 +213,12 @@ function BattleDeaths() {
             onUpdate={(figure) => setChartState(figure)} />
         </>
         )
+    }
+
+    function renderError() {
+      return(
+        <Error/>
+      )
     }
 
     return(

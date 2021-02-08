@@ -23,7 +23,8 @@ const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        font-family: sans-serif;
+        font-family: "Arial";
+
         color: #333;
         background: #f9f9f8;
     }
@@ -33,9 +34,22 @@ const GlobalStyle = createGlobalStyle`
         display: flex;
         align-items: center;
         justify-content: space-around;
-        padding: 1em;
-        background: white;
+        padding: 2em;
+        background: #f9f9f8;
         width: 100%;
+        border-bottom: 2px dashed black;
+        flex-direction: row;
+       
+    }
+
+    header img {
+        width: 5em;
+        margin-right: 1em;
+    }
+
+    header div {
+        display: flex;
+        
     }
 
     main {
@@ -51,7 +65,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     p {
-        font-size: .7rem;
+        font-size: 1rem;
     }
 
     .popup img {
@@ -86,16 +100,12 @@ const GlobalStyle = createGlobalStyle`
     .legend-wrapper {
         width: 100%;
         height: auto;
-   
         margin-bottom: 1em;
     }
     .pol-wrapper {
         width: 100%;
- 
         height: 4em;
         display: flex;
-        
-        margin-top: 1em;
         align-items: center;
         justify-content: flex-start;
     }
@@ -103,7 +113,6 @@ const GlobalStyle = createGlobalStyle`
     .polygon1, .polygon2 {
         width: 1.3rem;
         height: 1.3rem;
-        
         margin-right: 1em;
     }
 
@@ -115,9 +124,31 @@ const GlobalStyle = createGlobalStyle`
         background: #64dbf0;
     }
 
+    .infowrap h2 {
+        margin: 1em 0;
+    }
+
+    .infowrap img {
+        width: 100%;
+        height: 10em;
+        object-fit: cover;
+        margin-bottom: 1em;
+
+    }
 
 
+    @media (max-width: 770px) {
+        header {
+            flex-direction: column;
+            height: 20vh;
+            
 
+        }
+
+        header img {
+            display: none;
+        }
+    }
 `
 
 export default GlobalStyle;

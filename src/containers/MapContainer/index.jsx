@@ -21,7 +21,7 @@ const MapWrapper = styled.div`
 
 function MapContainer() {
     const mapElement = useRef();
-    //const infoWrapper = useRef()
+
     const [operationsData, setOperationsData] = useState(null);
     const [conflictData, setConflictData] = useState(null);
     const [operationsMarkers, setOperationsMarkers] = useState([])
@@ -89,7 +89,7 @@ function MapContainer() {
         map = new Mapbox.Map({
             container: mapElement.current,
             style: 'mapbox://styles/ithinn/ckki1ex630fz317nwvhn811o1',
-            zoom: 1,
+            zoom: 2,
         })
         .on("load", () => {
             let el;
@@ -143,8 +143,10 @@ function MapContainer() {
                         }
                     }
                 };
+
            
                 conflictData.objects.forEach(item => {
+                    
                     //styling for custom marker
                     el = document.createElement('div');
                     el.classList.add("conflicts-marker")
@@ -201,15 +203,26 @@ function MapContainer() {
                             center: [item.metadata.longitude, item.metadata.latitude],
                             zoom: `${item.metadata.zoom_level ? item.metadata.zoom_level : 3}`
                         })
-                         
+
+
+                         console.log(map.getLayer("country"));
+                         console.log(map.getLayer("country2"));
                         //removes existing layers and sources if a conflict marker has been clicked earlier
-                        if (geoData !== null) {
+                       
+                       
+                        if (map.getLayer("country") !== undefined) {
                             map.removeLayer('country');
                             map.removeSource('pol');
                         }
 
+                        if (map.getLayer("country2") !== undefined) {
+                            map.removeLayer('country2');
+                            map.removeSource('pol2');
+                        }
+                    
                         geoData = item.metadata.data;
-                            
+                        secondData = item.metadata.second_polygon;
+                   
                         map.addSource("pol", {
                             'type': 'geojson',
                             'data': geoData,
@@ -224,14 +237,7 @@ function MapContainer() {
                                 'fill-outline-color': 'rgba(200, 100, 240, 1)'
                             }
                         }) 
-
-                        if (secondData !== null) {
-                            map.removeLayer('country2');
-                            map.removeSource('pol2');
-                        }
-                            
-                        secondData = item.metadata.second_polygon;
-                            
+   
                         if (item.metadata.second_polygon !== undefined) {
                               
                             map.addSource("pol2", {
@@ -302,24 +308,20 @@ function MapContainer() {
 
         map.flyTo({
             center: [6.37, 20.56],
-            zoom: 1
+            zoom: 2
         })
         
         
-        if (geoData !== null) {
+        if (map.getLayer("country") !== undefined) {
             map.removeLayer('country');
             map.removeSource('pol');
-            geoData = null;
-
+            
         }
 
-        if (secondData !== null) {
+        if (map.getLayer("country2") !== undefined) {
             map.removeLayer('country2');
             map.removeSource('pol2');
-            secondData = null;
-        }
-        
-        
+        }   
     }
 
     function renderSkeleton() {
@@ -338,18 +340,17 @@ function MapContainer() {
     }
     
     function renderPage() {
-        return(<>
-            
-            <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} conflictCB={conflictCB} operationsCB={operationsCB} refreshMap={handleCloseIcon} />
-            <MapWrapper ref={mapElement} />
+        return(
+            <>
+                <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={handleCloseIcon} conflictCB={conflictCB} operationsCB={operationsCB} refreshMap={handleCloseIcon} />
+                <MapWrapper ref={mapElement} />
             </>
         )
     }
 
     return(
         <>
-        {(operationsData === null) ? renderSkeleton() : renderPage()}
-     
+            {(operationsData === null) ? renderSkeleton() : renderPage()}
         </>
     )
 }

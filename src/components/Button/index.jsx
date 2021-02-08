@@ -4,14 +4,11 @@ import { FiRefreshCw } from "react-icons/fi";
 
 
 const ButtonBase = styled.button`
-  font-size: 1rem;
+  font-size: 1.5rem;
   background: white;
   color: #333;
   padding: .5em;
-  margin-left: .5em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
   border: none; 
   
   &:hover {

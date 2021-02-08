@@ -22,9 +22,9 @@ function App() {
         <Header/>
         <Switch>
 
-          <Route path="/map" component={MapContainer}/>
+          <Route exact path="/" component={MapContainer}/>
           <Route path="/viz" component={VizContainer} />
-          <Route exact path="/" component={HomeContainer}/>
+          
 
         </Switch>
       </Router>

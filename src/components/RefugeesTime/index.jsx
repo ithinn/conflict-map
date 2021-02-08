@@ -75,7 +75,13 @@ function RefugeesTime() {
         let newOptions = 
         {
             title: {
-                text: 'Hvilke land har flest mennesker på flukt?'
+                text: 'Hvilke land har flest mennesker på flukt?',
+                style: {
+                    fontSize: "2rem",
+                    fontWeight: "400",
+                },
+                
+
             },
             colors: ['orange', 'red', 'green', 'blue', 'gray', 'purple', 'pink', 'lightblue', 'marine'],
             tooltip: {
@@ -84,13 +90,17 @@ function RefugeesTime() {
             },
             chart: {
                 type: 'packedbubble',
-                height: '50%',
-                backgroundColor:"blue",
+                backgroundColor:"#f9f9f8",
+                style: {
+                    'font-family': 'Arial'
+                }
             },
             plotOptions: {
                 packedbubble: {
+                    useSimulation: true,
                     minSize: '30%',
                     maxSize: '400%',
+                   
                     layoutAlgorithm: {
                         splitSeries: false,
                         gravitationalConstant: 0.02,
@@ -101,8 +111,8 @@ function RefugeesTime() {
                         format: '{point.name}',
                         filter: {
                             property: 'y',
-                            operator: '>=',
-                            value: 200
+                            operator: '>',
+                            value: 250
                         },
                         style: {
                             color: 'black',
@@ -140,7 +150,8 @@ function RefugeesTime() {
         console.log("page-rendered-ref")
         return(
         <Container>
-            <HighchartsReact 
+            <HighchartsReact
+            containerProps={{style: {height: '100%', width: "100%"}}} 
             highcharts={Highcharts}
             options={options}
             />
