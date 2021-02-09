@@ -8,7 +8,7 @@ Link
 } from "react-router-dom";
 import MapContainer from "./containers/MapContainer";
 
-import HomeContainer from "./containers/HomeContainer";
+
 import GlobalStyle from "./components/GlobalStyle";
 import Header from "./components/Header"
 

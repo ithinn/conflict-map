@@ -1,7 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import planesImg from "../../img/UX_Gun_on_Unsplash.jpg";
-
-
 
 const GlobalStyle = createGlobalStyle`
     
@@ -24,7 +21,6 @@ const GlobalStyle = createGlobalStyle`
 
     body {
         font-family: "Arial";
-
         color: #333;
         background: #f9f9f8;
     }
@@ -38,8 +34,7 @@ const GlobalStyle = createGlobalStyle`
         background: #f9f9f8;
         width: 100%;
         border-bottom: 2px dashed black;
-        flex-direction: row;
-       
+        flex-direction: row; 
     }
 
     header img {
@@ -49,7 +44,6 @@ const GlobalStyle = createGlobalStyle`
 
     header div {
         display: flex;
-        
     }
 
     main {
@@ -57,8 +51,6 @@ const GlobalStyle = createGlobalStyle`
         scroll-snap-type: y mandatory;
         overflow: auto;
     }
-
-   
 
     h1, h2, h3 {
         margin: 0;
@@ -70,7 +62,16 @@ const GlobalStyle = createGlobalStyle`
 
     .mapboxgl-marker:hover {
         cursor: pointer;
-      }
+    }
+
+    .popup {
+        width: 20em;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
 
     .popup img {
         width: 96%;
@@ -83,19 +84,8 @@ const GlobalStyle = createGlobalStyle`
 
     .popupDate {
         font-style: italic;
-
     }
  
-
-    .popup {
-        width: 20em;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index: 2;
-    }
-
     .operations-marker {
         visibility: visible;
         z-index: 1;
@@ -106,6 +96,7 @@ const GlobalStyle = createGlobalStyle`
         height: auto;
         margin-bottom: 1em;
     }
+
     .pol-wrapper {
         width: 100%;
         height: 4em;
@@ -129,7 +120,7 @@ const GlobalStyle = createGlobalStyle`
     }
 
     .infowrap h2 {
-        margin: 1em 0;
+        margin: .5em 0;
     }
 
     .infowrap img {

@@ -8,13 +8,16 @@ const ErrorBase = styled.section`
     display: flex;
     justify-content: center;
     align-items: center;
+
 `
 
 function Error() {
-    <section>
+    return(
+    <ErrorBase>
         <MdErrorOutline />
         <SectionTitle>Serveren klarer ikke å laste innholdet, prøv igjen om litt.</SectionTitle>
-    </section>
+    </ErrorBase>
+    )
 }
 
 export default Error;

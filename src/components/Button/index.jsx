@@ -9,19 +9,17 @@ const ButtonBase = styled.button`
   color: #333;
   padding: .5em;
   width: 100%;
-  border: none; 
-  
+  border: none;  
   &:hover {
     background: rgba(0, 0, 0, 0.5);
   }
 `
 
 
-function Button( {onClick, children} ) {
+function Button( { onClick } ) {
     return(
         <ButtonBase onClick={onClick}> 
           <FiRefreshCw/>
-         
         </ButtonBase>
     )
 }

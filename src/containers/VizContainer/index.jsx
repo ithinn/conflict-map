@@ -3,7 +3,7 @@ import styled from "styled-components";
 import VizWrapper from "../../components/VizWrapper"
 import scrollToComponent from "react-scroll-to-component";
 import BattleDeaths from "../../components/BattleDeaths"
-import RefugeesTime from "../../components/RefugeesTime"
+import RefugeesFrom from "../../components/RefugeesFrom"
 
 
 
@@ -18,7 +18,7 @@ function VizContainer() {
 
     return(
         <main>
-            <VizWrapper id="refugeesTime" func={handleClickArrow} comp={<RefugeesTime/>} />   
+            <VizWrapper id="RefugeesFrom" func={handleClickArrow} comp={<RefugeesFrom/>} />   
             <VizWrapper id="battleDeaths" func={handleClickArrow} comp={<BattleDeaths/>} />
             
         </main>

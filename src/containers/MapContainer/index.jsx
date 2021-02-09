@@ -10,6 +10,7 @@ let map = null;
 let popUp = null;
 let geoData = null;
 let secondData = null;
+let marker = null;
 
 
 const MapWrapper = styled.div`
@@ -25,9 +26,6 @@ function MapContainer() {
 
     const [operationsData, setOperationsData] = useState(null);
     const [conflictData, setConflictData] = useState(null);
-    const [operationsMarkers, setOperationsMarkers] = useState([])
-    const [conflictsMarkers, setConflictsMarkers] = useState([])
-    const [isInfo, setIsInfo] = useState(null);
     const [conflictCB, setConflictCB] = useState(true)
     const [operationsCB, setOperationsCB] = useState(true)
  
@@ -100,6 +98,7 @@ function MapContainer() {
         .on("load", () => {
             let el;
 
+
             //Creates markers for UN operations
 
             if (operationsData !== null) {
@@ -127,7 +126,10 @@ function MapContainer() {
                         <p class="popupDate">Etablert i ${item.metadata.started.slice(0,4)}</p>
                     `)
               
-                    setOperationsMarkers(prev => [...prev, new Mapbox.Marker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).setPopup(popUp).addTo(map)])
+                    marker = new Mapbox.Marker(el)
+                    .setLngLat([item.metadata.longitude, item.metadata.latitude])
+                    .setPopup(popUp)
+                    .addTo(map)
                     
                 })
             }
@@ -135,34 +137,7 @@ function MapContainer() {
             // Creates markers for conflicts
             if (conflictData !== null) {
 
-
-                //I want to add a click-event to the conflict markers in order to zoom in on the area, and render a polygon.
-                //However, you can't make a click-event to a marker, unless you're adding a popup. (For some reason).
-                //Therefore:
-                //I extend the Marker class.   
-                //Marker already has an internal method _onMapClick, which is used by the popup functionality. 
-                //The extension adds the method "onMapClick."" onMapClick takes a function and can be chained with other methods.
-                //It also overrides _onMapClick to trigger _handleClick if it exists. 
-
-
-                class ClickableMarker extends Mapbox.Marker {
-                    onClick(handleClick) {
-                        this._handleClick = handleClick;
-                        return this;
-                    }
-
-                    _onMapClick(event) {
-                        const targetElement = event.originalEvent.target;
-                        const element = this._element;
-
-                        if (this._handleClick && (targetElement === element || element.contains((targetElement)))) {
-                            this._handleClick()
-                        }
-                    }
-                };
-
-                
-                //Loops through all objects in conflictData
+    
                 conflictData.objects.forEach(item => {
                     
                     //styling for custom marker
@@ -175,43 +150,7 @@ function MapContainer() {
                     el.style.backgroundSize = 'cover';
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
-
-
-                    //When a conflict marker is clicked, information about the conflict will appear in the InfoBox.
-                    //If a conflict object has TWO polygons, it needs a legend to tell what the different areas are.
-                    //Therefore, there are two versions of the html that is rendered inside the InfoBox - one with a legend, and one without. 
-
-                    let htmlLegend =  `
-                        <h2>${item.title}</h2>
-                        <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
-                        <p><strong>Parter:</strong>${item.metadata.parties}</p>
-                        <div class="legend-wrapper">
-                            <div class="pol-wrapper">
-                                <div class="polygon1"></div>
-                                <p>${item.metadata.polygon1_text}</p>
-                            </div>
-
-                            <div class="pol-wrapper">
-                                <div class="polygon2"></div>
-                                <p>${item.metadata.polygon2_text}</p>
-                            </div>
-                        </div>
-                        <p>${item.metadata.description}</p>
-                        <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
-                    `
-                    
-                    let html = 
-                    `
-                        <h2>${item.title}</h2>
-                        <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
-                        <p><strong>Parter: </strong>${item.metadata.parties}</p>
-                        <p>${item.metadata.description}</p>
-                        <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
-                    `
-
-                    //The markers are created and saved in state. In the process, I define the content of the onClick method 
-                    setConflictsMarkers(prev => [...prev, new ClickableMarker(el).setLngLat([item.metadata.longitude, item.metadata.latitude]).onClick(() => {
-                        
+                    el.addEventListener("click", () => {
 
                         //Choses if "html" or "htmlLegend" will render based on whether there's data in the item's second_pologon-metafield
                         if (item.metadata.second_polygon !== "" && item.metadata.second_polygon !== undefined) {
@@ -220,11 +159,6 @@ function MapContainer() {
                             document.querySelector(".infowrap").innerHTML = html;
                         }
                         
-
-                        //Declares that there is info in the InfoBox
-                        setIsInfo(true);
-
-
                         //Zooms in on the country/area where the conflict takes place.
                         map.flyTo({
                             center: [item.metadata.longitude, item.metadata.latitude],
@@ -284,7 +218,39 @@ function MapContainer() {
                                 }
                             })  
                         }
-                    }).addTo(map)])
+                    });
+
+                    let htmlLegend =  `
+                        <h2>${item.title}</h2>
+                        <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
+                        <p><strong>Parter:</strong>${item.metadata.parties}</p>
+                        <div class="legend-wrapper">
+                            <div class="pol-wrapper">
+                                <div class="polygon1"></div>
+                                <p>${item.metadata.polygon1_text}</p>
+                            </div>
+
+                            <div class="pol-wrapper">
+                                <div class="polygon2"></div>
+                                <p>${item.metadata.polygon2_text}</p>
+                            </div>
+                        </div>
+                        <p>${item.metadata.description}</p>
+                        <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
+                    `
+                    
+                    let html = 
+                    `
+                        <h2>${item.title}</h2>
+                        <img src=${item.metadata.header_img.url} alt=${item.metadata.alternative_text} />
+                        <p><strong>Parter: </strong>${item.metadata.parties}</p>
+                        <p>${item.metadata.description}</p>
+                        <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
+                    `
+                    marker = new Mapbox.Marker(el)
+                    .setLngLat([item.metadata.longitude, item.metadata.latitude])
+                    .addTo(map);
+                    
                 })
             }
         })
@@ -336,8 +302,6 @@ function MapContainer() {
     function refreshMap(event) {
     
         document.querySelector(".infowrap").innerHTML = ""
-        
-        setIsInfo(false);
 
         map.flyTo({
             center: [6.37, 20.56],
@@ -372,7 +336,13 @@ function MapContainer() {
     function renderPage() {
         return(
             <>
-                <InfoBox func={handleCheckbox} isInfo={isInfo} handleClose={refreshMap} conflictCB={conflictCB} operationsCB={operationsCB} refreshMap={refreshMap} />
+                <InfoBox 
+                    func={handleCheckbox} 
+                    handleClose={refreshMap} 
+                    conflictCB={conflictCB} 
+                    operationsCB={operationsCB} 
+                    refreshMap={refreshMap} />
+
                 <MapWrapper ref={mapElement} />
             </>
         )

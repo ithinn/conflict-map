@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
 import Plot from "react-plotly.js";
 import Skeleton from "../Skeleton/";
 import Error from "../Error";
 
+
 let colorList = [];
 
+//Sorts out all duplicate values - used to filter arrays
 const onlyYearUnique = (value, index, self) => {
     return self.indexOf(value) === index;
 }
 
+
+//Picks a random color HEX - used to generate an unique color to each item the data
 export function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
@@ -19,11 +22,13 @@ export function getRandomColor() {
     return color;
 }
 
+
 function BattleDeaths() {
 
     const [chartState, setChartState] = useState(null)
+    const [error, setError] = useState(false);
 
-    //Stacked bar - Battle deaths
+    //Fetch data from the Uppsala University API
     useEffect(() => {
         let traces = [];
         
@@ -33,23 +38,23 @@ function BattleDeaths() {
         })
         .then(data => {
       
-          //Oppretter objekt for hver battle_location og lagrer det i traces
+          //Creates an object for each battle_location in the data and saves it in traces.
+          //Pushes a random color for each object into colorlist. 
           data.Result.forEach(item => {
+            
             colorList.push(getRandomColor())
-
 
             traces.push({
               x: [],
               y: [],
-              text: "fdsf",
               name: item.battle_location,
               type: 'bar',
               hovertemplate: " Antall drepte: %{y} (%{x})" 
-
             })
             });
     
-          //Pusher riktige år inn i x-arrayet til riktig trace-objekt, og sorterer kun unike år-verdier.  
+          //Pushes the corresponding "year" into each trace's x-array. 
+          //Sorts out all duplicate years, so that all the year items in x-array are unique.  
           for (let i=0; i<data.Result.length; i++) {
             for (let j=0; j<traces.length; j++) {
               if (traces[j].name === data.Result[i].battle_location) {
@@ -59,35 +64,43 @@ function BattleDeaths() {
             }
           }
     
-          //Pusher en "null" inn i y for hvert item i x-arrayet
+          //Pushes a "null" into the y-array for every item in the x-array
           for (let i = 0; i < traces.length; i++) {
             for(let j = 0; j < traces[i].x.length; j++) {
               traces[i].y.push(null);
             }
           }
     
-          //Erstatter "null" med bd_best i y-arrayet
+          //Loops through all data, the trace-array and each trace's x-array. 
+          //Pushes bd_best into the right index in the y-array, based on which year the data contains. 
+          //(If a battle took place in 1996, the bd_best value is pushed in the y-array on the same index as the year "1996" in the x-array)
+          //If that index already have a value from an earlier iteration, the new value is added to the old. 
+
           for (let i = 0; i < data.Result.length; i++) {
             
             for(let j = 0; j < traces.length; j++) {
     
               for (let k = 0; k < traces[j].x.length; k++) {
-    
+                
                 if (traces[j].name === data.Result[i].battle_location && traces[j].x[k] === data.Result[i].year) {
                   traces[j].y[k] === null ? traces[j].y[k] = Number(data.Result[i].bd_best) : traces[j].y[k] = Number(traces[j].y[k]) + Number(data.Result[i].bd_best);
                 }
               }
             }
           }
-    
+          
+
+          //There can be several traces with the same "name" (battle locations).
+          //This creates a new array where all the duplicates are removed.
+          //We now have one array with one trace for each battle location. 
+          //Each trace have an x-array with unique years where the battles took place, and an y-array that stores the number of fatalities for each year. 
+          
           const withoutDuplicates = Array.from(new Set(traces.map(a => a.name))).map(name => {
             return traces.find(a => a.name === name);
           })
 
-        //  width: 750,
-         // height: 320,
-  
-
+      
+          //Sets the layout of the chart
           let layout = {
             autosize: true,
             margin: {
@@ -96,7 +109,6 @@ function BattleDeaths() {
               't': 100,
               'r': 100,
             },
-
             pad: 20,
             title: {
               text: "Antall drepte i konflikter",
@@ -107,7 +119,7 @@ function BattleDeaths() {
             },
             legend: {
                 'title': {
-                'text': "Parter i konfliktene:",
+                'text': "Hvor ble kampene utkjempet?",
                 'side': "top",
                 'x': "0.75",
                 'xanchor': "right",
@@ -146,7 +158,6 @@ function BattleDeaths() {
                 tickfont: {
                   size: 15,
                 },
- 
             },
             yaxis: {
                 title: {
@@ -160,13 +171,11 @@ function BattleDeaths() {
                 tickfont: {
                   size: 15,
                 },
-               // autorange: true,
             },
         };
     
-          //Forbereder oppdatering av state
-          let newChartState = {
-            //...chartState, 
+          //Saves "withoutDuplicates" and "layout", and sets responsive to true, in a new variable
+          let newChartState = { 
             data: [...withoutDuplicates],
             layout: layout,
             frames: [],
@@ -175,18 +184,18 @@ function BattleDeaths() {
             } 
           };
      
-          //Setter state med dataen vi har hentet ut. 
+          //Sets state with the new variable
           setChartState(newChartState) 
+
         })
         .catch(error => {
-          renderError();
-          alert("En serverfeil gjør at dataen ikke kan lastes inn. Prøv igjen om litt.")
-          console.log(error);
+          setError(true);
         })
       }, [])
     
+    
+      
     function renderSkeleton() {
-  
       return( 
         <Skeleton
           width="96vw" 
@@ -197,13 +206,13 @@ function BattleDeaths() {
       )
     } 
 
+
     function renderPage() {
       return(
-
         <>
             <Plot
-            useResizeHandler
-            style={{width: "100%"}}
+            useResizeHandler //Makes the chart responsive
+            style={{width: "100%"}} //Has to be there for the responsiveness to work
             data={chartState.data}
             layout={chartState.layout}
             frames={chartState.frames}
@@ -214,23 +223,19 @@ function BattleDeaths() {
         )
     }
 
-    function renderError() {
-      return(
-        <Error/>
-      )
-    }
+    if (error === true) {
+      return(<Error/>)
+    } 
+    
 
     return(
         <>
-        {(chartState === null) ? renderSkeleton() : renderPage()}
-          
-          
+        {(chartState === null) ? renderSkeleton() : renderPage()}  
         </>
         )
 }
 
 export default BattleDeaths;
-//
 
 
       

@@ -1,11 +1,9 @@
-import React, {useRef} from "react";
+import React from "react";
 import styled from "styled-components";
 import Button from "../Button";
-import FlexDiv from "../FlexDiv";
-import { AiOutlineCloseCircle } from "react-icons/ai";
-import { IconContext } from "react-icons/lib";
 import confIcon from "../../img/conflict_icons/icon_bck_gray.png"
 import opIcon from "../../img/Flags/un.png"
+
 
 const InfoBoxBase = styled.article`
     background-color: white;
@@ -26,7 +24,6 @@ const InfoBoxBase = styled.article`
     }
 `
 
-
 const LabelAsButton = styled.label`
     font-size: .9rem;
     padding: .3em .3em;
@@ -41,37 +38,34 @@ const LabelAsButton = styled.label`
         background: #593131;
     }
 
-    @media (min-width: 1200px) {
+    @media (min-width: 1500px) {
         font-size: 1.3rem;
     }
     
 `
 
 const ImgDiv = styled.div`
-width: 40px;
-display: flex;
-justify-content: flex-end;
-height: auto;
-background: darkgrey;
-border: 1px darkgrey solid;
-border-radius: 10em;
-margin-right: 1em;
-box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.25);
+    width: 40px;
+    display: flex;
+    justify-content: flex-end;
+    height: auto;
+    background: darkgrey;
+    border: 1px darkgrey solid;
+    border-radius: 10em;
+    margin-right: 1em;
+    box-shadow: inset 0px 0px 1px 1px rgba(0,0,0,0.25);
 `
 
 const ImgDivOff = styled(ImgDiv)`
-justify-content: flex-start;
-background: #f9f9f8;
-
+    justify-content: flex-start;
+    background: #f9f9f8;
 `
-
 
 const IconImage = styled.img`
     width: 20px;
     height: 20px;
     border-radius: 50%;
     object-fit: cover;
-    
 `
 
 const InvisibleCheckbox = styled.input`
@@ -79,8 +73,7 @@ height: 1px;
 width: 1px;
 `
 
-function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMap }) {
-    
+function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
 
     return(
         <InfoBoxBase>
@@ -88,9 +81,14 @@ function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMa
             
             <div >
                 <div>
-                    <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="conflicts" />
+                    <InvisibleCheckbox 
+                        defaultChecked="true" 
+                        onClick={func} 
+                        type="checkbox" 
+                        id="conflicts" />
+
                     <LabelAsButton htmlFor="conflicts">
-                        {conflictCB ? 
+                        {conflictCB === true ? 
                         <ImgDiv>
                             <IconImage src={confIcon} />
                         </ImgDiv> 
@@ -104,10 +102,15 @@ function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMa
                 </div>
                 
                 <div>
-                    <InvisibleCheckbox defaultChecked="true" onClick={func} type="checkbox" id="operations" />
+                    <InvisibleCheckbox 
+                        defaultChecked="true" 
+                        onClick={func} 
+                        type="checkbox"    
+                        id="operations" />
+                        
                     <LabelAsButton htmlFor="operations">
                         
-                        {operationsCB ? 
+                        {operationsCB === true ? 
                         <ImgDiv>
                             <IconImage src={opIcon} />
                         </ImgDiv> 
@@ -122,16 +125,11 @@ function InfoBox({func, isInfo, handleClose, conflictCB, operationsCB, refreshMa
                 
             </div>
 
-            <FlexDiv >
-                {isInfo ? 
-                <IconContext.Provider value={{size: "2rem"}}>
-                    <AiOutlineCloseCircle onClick={handleClose}/>
-                </IconContext.Provider> : null}
-
-                <div className="infowrap"></div>
-            </FlexDiv>
+            <div className="infowrap"></div>
+          
         </InfoBoxBase>
     )
 }
 
 export default InfoBox;
+

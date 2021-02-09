@@ -1,10 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import BattleDeaths from "../BattleDeaths"
-import RefugeesTime from "../RefugeesTime"
-import { ImCircleDown } from "react-icons/im";
-import { IconContext } from "react-icons/lib";
-//import { IconContext } from "react-icons/lib";
+
 
 const VizWrapperBase = styled.section`
 width: 100%;
@@ -16,25 +12,26 @@ flex-direction: column;
 justify-content: space-around;
 align-items: center;
 scroll-snap-align: center;
-
 `
 
 
-function VizWrapper( {func, comp, id, height} ) {
-
-   
+function VizWrapper( {comp, id } ) {
 
     return(
         <VizWrapperBase id={id}>
             {comp}
-            
         </VizWrapperBase>
     )
 }
 
 export default VizWrapper;
+
+
+
+
+
 /*
-<a href={id === "battleDeaths" ? "#refugeesTime" : "#battleDeaths"}>
+<a href={id === "battleDeaths" ? "#RefugeesFrom" : "#battleDeaths"}>
                 <IconContext.Provider value={{size: "3rem"}}>
                     <ImCircleDown onClick={func}/>
                 </IconContext.Provider>

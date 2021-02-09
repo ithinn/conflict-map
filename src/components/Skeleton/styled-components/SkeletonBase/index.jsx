@@ -3,14 +3,13 @@ import styled from "styled-components";
 
 const SkeletonBase = styled.article`
     background: lightgray;
-    width: ${props => props.width};
-    height: ${props => props.height};
+    width: 96vw;
+    height: 100vh;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position: relative;
 `;
 
 export default SkeletonBase;
