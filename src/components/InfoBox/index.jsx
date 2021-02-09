@@ -19,9 +19,7 @@ const InfoBoxBase = styled.article`
     box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
     overflow-y: auto;
     padding: 1em;
-    @media (min-width: 600px) {
-        
-    }
+   
 `
 
 const LabelAsButton = styled.label`
@@ -77,7 +75,7 @@ function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
 
     return(
         <InfoBoxBase>
-            <Button onClick={refreshMap}/>
+            <Button onClick={refreshMap} color="white" buttonWidth="100%" buttonBorder="none"/>
             
             <div >
                 <div>
@@ -107,7 +105,7 @@ function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
                         onClick={func} 
                         type="checkbox"    
                         id="operations" />
-                        
+
                     <LabelAsButton htmlFor="operations">
                         
                         {operationsCB === true ? 

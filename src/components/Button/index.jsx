@@ -5,21 +5,29 @@ import { FiRefreshCw } from "react-icons/fi";
 
 const ButtonBase = styled.button`
   font-size: 1.5rem;
-  background: white;
+  background: ${props => props.color};
   color: #333;
   padding: .5em;
-  width: 100%;
-  border: none;  
+  margin: 0 auto;
+  border: ${props => props.buttonBorder};  
+  width: ${props => props.buttonWidth};
+  display: inline-block;
   &:hover {
     background: rgba(0, 0, 0, 0.5);
+    color: white;
   }
 `
 
-
-function Button( { onClick } ) {
+function Button( { children,onClick, color, buttonWidth, buttonBorder } ) {
     return(
-        <ButtonBase onClick={onClick}> 
+        <ButtonBase 
+          onClick={onClick} 
+          color={color} 
+          buttonWidth={buttonWidth} 
+          buttonBorder={buttonBorder}> 
+
           <FiRefreshCw/>
+        {children} 
         </ButtonBase>
     )
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import refugeeData from "./refugeeData.json";
 import Skeleton from "../Skeleton";
+import Error from "../Error";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import HC_more from 'highcharts/highcharts-more' //module
@@ -141,6 +142,8 @@ function RefugeesFrom() {
     }, [])
 
     
+
+    
     function renderSkeleton() {
         return( 
           <Skeleton
@@ -161,6 +164,10 @@ function RefugeesFrom() {
             options={options}
             />
         </Container>)
+    }
+
+    if (options === undefined) {
+        return(<Error/>)
     }
 
 

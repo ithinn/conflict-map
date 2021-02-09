@@ -131,6 +131,10 @@ const GlobalStyle = createGlobalStyle`
 
     }
 
+    #battleDeaths {
+        margin-top: 3em;
+    }
+
 
     @media (max-width: 770px) {
         header {
@@ -144,6 +148,8 @@ const GlobalStyle = createGlobalStyle`
             display: none;
         }
     }
+
+
 `
 
 export default GlobalStyle;

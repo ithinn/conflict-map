@@ -4,7 +4,7 @@ import styled from "styled-components";
 import Cosmic from "cosmicjs";
 import InfoBox from "../../components/InfoBox";
 import Skeleton from "../../components/Skeleton";
-
+import Error from "../../components/Error";
 
 let map = null;
 let popUp = null;
@@ -28,6 +28,7 @@ function MapContainer() {
     const [conflictData, setConflictData] = useState(null);
     const [conflictCB, setConflictCB] = useState(true)
     const [operationsCB, setOperationsCB] = useState(true)
+    const [error, setError] = useState(false)
  
     Mapbox.accessToken = process.env.MAPBOX_API_KEY;
 
@@ -55,7 +56,7 @@ function MapContainer() {
             setOperationsData(data);
         })
         .catch(error => {
-            console.log(error);
+            setError(true)
         })
 
         //conflicts
@@ -104,7 +105,7 @@ function MapContainer() {
             if (operationsData !== null) {
 
                 operationsData.objects.map(item => {
-                    el = document.createElement('div');
+                    el = document.createElement('button');
                     el.classList.add("operations-marker")
                     el.style.display = 'block';
                     el.style.width = '30px';
@@ -113,6 +114,7 @@ function MapContainer() {
                     el.style.backgroundSize = 'cover';
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
+                    el.style.border = "none";
 
                     popUp = new Mapbox.Popup({
                         className: 'popup',
@@ -126,7 +128,7 @@ function MapContainer() {
                         <p class="popupDate">Etablert i ${item.metadata.started.slice(0,4)}</p>
                     `)
               
-                    marker = new Mapbox.Marker(el)
+                    new Mapbox.Marker(el)
                     .setLngLat([item.metadata.longitude, item.metadata.latitude])
                     .setPopup(popUp)
                     .addTo(map)
@@ -141,7 +143,7 @@ function MapContainer() {
                 conflictData.objects.forEach(item => {
                     
                     //styling for custom marker
-                    el = document.createElement('div');
+                    el = document.createElement('button');
                     el.classList.add("conflicts-marker")
                     el.style.display = 'block';
                     el.style.width = '30px';
@@ -150,6 +152,7 @@ function MapContainer() {
                     el.style.backgroundSize = 'cover';
                     el.style.backgroundPosition= "center";
                     el.style.borderRadius = "50%";
+                    el.style.border = "none";
                     el.addEventListener("click", () => {
 
                         //Choses if "html" or "htmlLegend" will render based on whether there's data in the item's second_pologon-metafield
@@ -247,7 +250,7 @@ function MapContainer() {
                         <p>${item.metadata.description}</p>
                         <a target="blank" href=${item.metadata.link}>Les konfliktprofilen</a>
                     `
-                    marker = new Mapbox.Marker(el)
+                    new Mapbox.Marker(el)
                     .setLngLat([item.metadata.longitude, item.metadata.latitude])
                     .addTo(map);
                     
@@ -321,15 +324,8 @@ function MapContainer() {
 
     function renderSkeleton() {
         return(
-            <Skeleton 
-            width="96vw" 
-            height="90vh" 
-            widthBox="12em" 
-            heightBox="3em" 
-            leftBox="2em" 
-            topBox="0" 
-            marginBox="1em 0">
-            </Skeleton>
+            <Skeleton />
+          
         )
     }
     
@@ -347,6 +343,12 @@ function MapContainer() {
             </>
         )
     }
+
+
+    if (error === true) {
+        return(<Error/>)
+    }
+
 
     return(
         <>
