@@ -8,11 +8,13 @@ import styled from "styled-components";
 import PageTitle from "../PageTitle";
 import tanks from "../../img/tanks-01.png";
 
+
 export const NavBase = styled.nav`
   width: 60%;
   display: flex;
   height: auto;
 `;
+
 
 export const UlBase = styled.ul`
   width: 100%;
@@ -24,6 +26,7 @@ export const UlBase = styled.ul`
   }
 `;
 
+
 export const LiBase = styled.li`
   padding-right: 2em;
   list-style-type: none;
@@ -31,26 +34,26 @@ export const LiBase = styled.li`
  
 `;
 
+
 function Header() {
     return(
         <header>
             <div>
-            <img src={tanks} />
-            <PageTitle>Konflikt</PageTitle>
+              <img src={tanks} />
+              <PageTitle>Konflikt</PageTitle>
             </div>
           
             <NavBase>
-            <UlBase>
-                <LiBase>
-                    <Link to="/viz">Datavisualisering</Link>
-                </LiBase>
-                <LiBase>
-                    <Link to="/">Kart</Link>
-                </LiBase>
-            </UlBase>
+              <UlBase>
+                  <LiBase>
+                      <Link to="/viz">Datavisualisering</Link>
+                  </LiBase>
+                  <LiBase>
+                      <Link to="/">Kart</Link>
+                  </LiBase>
+              </UlBase>
             </NavBase>
         </header>
-
     )
 }
 

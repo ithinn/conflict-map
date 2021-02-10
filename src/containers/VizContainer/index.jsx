@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import VizWrapper from "../../components/VizWrapper"
 import BattleDeaths from "../../components/BattleDeaths"
 import RefugeesFrom from "../../components/RefugeesFrom"
-
 
 
 function VizContainer() {

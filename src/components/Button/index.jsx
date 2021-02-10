@@ -18,7 +18,7 @@ const ButtonBase = styled.button`
   }
 `
 
-function Button( { children,onClick, color, buttonWidth, buttonBorder } ) {
+function Button( { children, onClick, color, buttonWidth, buttonBorder } ) {
     return(
         <ButtonBase 
           onClick={onClick} 
@@ -27,7 +27,7 @@ function Button( { children,onClick, color, buttonWidth, buttonBorder } ) {
           buttonBorder={buttonBorder}> 
 
           <FiRefreshCw/>
-        {children} 
+          {children} 
         </ButtonBase>
     )
 }

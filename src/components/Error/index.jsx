@@ -19,15 +19,15 @@ function refreshPage() {
 
 function Error() {
     return(
-    <ErrorBase>
-        <MdErrorOutline />
-        <SectionTitle>Serveren klarer ikke å laste innholdet, prøv igjen om litt.</SectionTitle>
-        <Button 
-            onClick={refreshPage} 
-            color="none" 
-            buttonWidth="fit-content" 
-            buttonBorder="4px solid #333">Last på nytt</Button>
-    </ErrorBase>
+        <ErrorBase>
+            <MdErrorOutline />
+            <SectionTitle>Serveren klarer ikke å laste innholdet, prøv igjen om litt.</SectionTitle>
+            <Button 
+                onClick={refreshPage} 
+                color="none" 
+                buttonWidth="fit-content" 
+                buttonBorder="4px solid #333">Last på nytt</Button>
+        </ErrorBase>
     )
 }
 

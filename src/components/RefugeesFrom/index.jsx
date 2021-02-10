@@ -5,7 +5,7 @@ import Skeleton from "../Skeleton";
 import Error from "../Error";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import HC_more from 'highcharts/highcharts-more' //module
+import HC_more from 'highcharts/highcharts-more'
 
 HC_more(Highcharts);
 
@@ -15,7 +15,7 @@ const Container = styled.div`
     margin: 0 auto;
 `
 
-//Used to format the values from the data so that it can be used 
+//Used to format the values from the data 
 //Replaces all instances of "-" with null, and removes all spaces from the remaining data. 
 function formatValue(string) {
     let withoutSpace = string === "-" ? null : Number(string.replace(/\s/g,''))
@@ -89,7 +89,7 @@ function RefugeesFrom() {
         let newOptions = 
         {
             title: {
-                text: 'Hvilke land har flest mennesker på flukt?',
+                text: 'Hvilke land har flest innbyggere på flukt?',
                 style: {
                     fontSize: "2rem",
                     fontWeight: "400",
@@ -129,6 +129,7 @@ function RefugeesFrom() {
                             color: 'black',
                             textOutline: 'none',
                             fontWeight: 'normal',
+                            fontSize: "15px",
                         }
                     }
                 }
@@ -140,8 +141,6 @@ function RefugeesFrom() {
         setOptions(newOptions);
 
     }, [])
-
-    
 
     
     function renderSkeleton() {
@@ -170,11 +169,11 @@ function RefugeesFrom() {
         return(<Error/>)
     }
 
-
     return(
-    <>  
-      {(options === null) ? renderSkeleton() : renderPage()}
-    </>)
+        <>  
+        {(options === null) ? renderSkeleton() : renderPage()}
+        </>
+    )
 }
 
 export default RefugeesFrom;

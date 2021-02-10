@@ -135,10 +135,6 @@ const GlobalStyle = createGlobalStyle`
         margin-top: 10em;
     }
 
-    .show-source {
-        display: block;
-    }
-
     .source-content {
         display: none;
     }
@@ -154,7 +150,6 @@ const GlobalStyle = createGlobalStyle`
             display: none;
         }
     }
-
 
 `
 

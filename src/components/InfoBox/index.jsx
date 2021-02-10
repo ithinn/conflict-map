@@ -13,13 +13,11 @@ export const InfoBoxBase = styled.article`
     max-height: 80vh;
     position: absolute;
     z-index: 2;
-    padding: .5em;
+    padding: 1em;
     margin-top: 1em;
     left: 5%;
     box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
-    overflow-y: auto;
-    
-   
+    overflow-y: auto;   
 `
 
 const LabelAsButton = styled.label`
@@ -67,15 +65,20 @@ const IconImage = styled.img`
 `
 
 export const InvisibleCheckbox = styled.input`
-height: 1px;
-width: 1px;
+    height: 1px;
+    width: 1px;
 `
 
 function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
 
     return(
         <InfoBoxBase>
-            <Button onClick={refreshMap} color="white" buttonWidth="100%" buttonBorder="none"/>
+            <Button 
+                onClick={refreshMap} 
+                color="white" 
+                buttonWidth="100%" 
+                buttonBorder="none"
+            />
             
             <div >
                 <div>
@@ -83,7 +86,8 @@ function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
                         defaultChecked="true" 
                         onClick={func} 
                         type="checkbox" 
-                        id="conflicts" />
+                        id="conflicts"
+                    />
 
                     <LabelAsButton htmlFor="conflicts">
                         {conflictCB === true ? 
@@ -104,7 +108,8 @@ function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
                         defaultChecked="true" 
                         onClick={func} 
                         type="checkbox"    
-                        id="operations" />
+                        id="operations" 
+                    />
 
                     <LabelAsButton htmlFor="operations">
                         
@@ -120,7 +125,6 @@ function InfoBox({func, conflictCB, operationsCB, refreshMap }) {
                         FN-operasjoner
                     </LabelAsButton>
                 </div>
-                
             </div>
 
             <div className="infowrap"></div>
