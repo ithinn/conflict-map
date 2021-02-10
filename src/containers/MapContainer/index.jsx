@@ -10,7 +10,6 @@ let map = null;
 let popUp = null;
 let geoData = null;
 let secondData = null;
-let marker = null;
 
 
 const MapWrapper = styled.div`
@@ -101,7 +100,6 @@ function MapContainer() {
 
 
             //Creates markers for UN operations
-
             if (operationsData !== null) {
 
                 operationsData.objects.map(item => {

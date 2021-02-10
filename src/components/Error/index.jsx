@@ -4,15 +4,13 @@ import { MdErrorOutline } from "react-icons/md";
 import SectionTitle from "../SectionTitle";
 import Button from "../Button";
 
-
 const ErrorBase = styled.section`
     font-size: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    color: #333;
-    
+    color: #333;  
 `
 
 function refreshPage() {

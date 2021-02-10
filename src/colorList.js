@@ -1,0 +1,31 @@
+let colorList = [
+    'orange', 
+    'red', 
+    'green', 
+    'blue', 
+    'cadetblue', 
+    'gray', 
+    'purple', 
+    'aquamarine', 
+    'pink', 
+    'lightblue', 
+    'blueviolet', 
+    'aqua', 
+    'darkcyan', 
+    'darkgoldenrod', 
+    'darkblue', 
+    'darkmagenta', 
+    'darkolivegreen', 
+    'darkorchid', 
+    'indianred', 
+    'darkseagreen', 
+    'darkslateblue', 
+    'darkslategray', 
+    'dodgerblue', 
+    'firebrick', 
+    'gold', 
+    'hotpink', 
+    'goldenrod'
+];
+
+export default colorList

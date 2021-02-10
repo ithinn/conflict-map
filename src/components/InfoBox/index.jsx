@@ -5,7 +5,7 @@ import confIcon from "../../img/conflict_icons/icon_bck_gray.png"
 import opIcon from "../../img/Flags/un.png"
 
 
-const InfoBoxBase = styled.article`
+export const InfoBoxBase = styled.article`
     background-color: white;
     width: 20%;
     min-width: 12em;
@@ -18,7 +18,7 @@ const InfoBoxBase = styled.article`
     left: 5%;
     box-shadow: 4px 4px 7px 5px rgba(38,28,27,0.47);
     overflow-y: auto;
-    padding: 1em;
+    
    
 `
 
@@ -66,7 +66,7 @@ const IconImage = styled.img`
     object-fit: cover;
 `
 
-const InvisibleCheckbox = styled.input`
+export const InvisibleCheckbox = styled.input`
 height: 1px;
 width: 1px;
 `

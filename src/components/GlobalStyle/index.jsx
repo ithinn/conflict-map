@@ -132,7 +132,15 @@ const GlobalStyle = createGlobalStyle`
     }
 
     #battleDeaths {
-        margin-top: 3em;
+        margin-top: 10em;
+    }
+
+    .show-source {
+        display: block;
+    }
+
+    .source-content {
+        display: none;
     }
 
 
@@ -140,8 +148,6 @@ const GlobalStyle = createGlobalStyle`
         header {
             flex-direction: column;
             height: 20vh;
-            
-
         }
 
         header img {

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import Skeleton from "../Skeleton/";
 import Error from "../Error";
+import colorList from "../../colorList";
 
+//let colorList = [];
 
-let colorList = [];
 
 //Sorts out all duplicate values - used to filter arrays
 const onlyYearUnique = (value, index, self) => {
@@ -27,7 +28,9 @@ function BattleDeaths() {
 
     const [chartState, setChartState] = useState(null)
     const [error, setError] = useState(false);
-
+   
+   
+    
     //Fetch data from the Uppsala University API
     useEffect(() => {
         let traces = [];
@@ -38,18 +41,19 @@ function BattleDeaths() {
         })
         .then(data => {
       
-          //Creates an object for each battle_location in the data and saves it in traces.
+          //Creates an object for each location_inc in the data and saves it in traces.
           //Pushes a random color for each object into colorlist. 
           data.Result.forEach(item => {
             
-            colorList.push(getRandomColor())
+           //colorList.push(getRandomColor())
 
             traces.push({
               x: [],
               y: [],
-              name: item.battle_location,
+              name: item.location_inc,
               type: 'bar',
-              hovertemplate: " Antall drepte: %{y} (%{x})" 
+              hoverinfo: "y+text",
+              hovertext: [],
             })
             });
     
@@ -57,7 +61,7 @@ function BattleDeaths() {
           //Sorts out all duplicate years, so that all the year items in x-array are unique.  
           for (let i=0; i<data.Result.length; i++) {
             for (let j=0; j<traces.length; j++) {
-              if (traces[j].name === data.Result[i].battle_location) {
+              if (traces[j].name === data.Result[i].location_inc) {
                 traces[j].x.push(data.Result[i].year);
                 traces[j].x = traces[j].x.filter(onlyYearUnique);  
               }
@@ -70,9 +74,16 @@ function BattleDeaths() {
               traces[i].y.push(null);
             }
           }
+
+          for (let i = 0; i < traces.length; i++) {
+            for(let j = 0; j < traces[i].x.length; j++) {
+              traces[i].hovertext.push(null);
+            }
+          }
     
           //Loops through all data, the trace-array and each trace's x-array. 
           //Pushes bd_best into the right index in the y-array, based on which year the data contains. 
+          //Pushes location_inc into the right index in the hovertext-array.
           //(If a battle took place in 1996, the bd_best value is pushed in the y-array on the same index as the year "1996" in the x-array)
           //If that index already have a value from an earlier iteration, the new value is added to the old. 
 
@@ -82,8 +93,9 @@ function BattleDeaths() {
     
               for (let k = 0; k < traces[j].x.length; k++) {
                 
-                if (traces[j].name === data.Result[i].battle_location && traces[j].x[k] === data.Result[i].year) {
+                if (traces[j].name === data.Result[i].location_inc && traces[j].x[k] === data.Result[i].year) {
                   traces[j].y[k] === null ? traces[j].y[k] = Number(data.Result[i].bd_best) : traces[j].y[k] = Number(traces[j].y[k]) + Number(data.Result[i].bd_best);
+                  traces[j].hovertext[k] = "ble drept i kamper i " + data.Result[i].location_inc + " i " + traces[j].x[k];
                 }
               }
             }
