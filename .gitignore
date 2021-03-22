@@ -3,4 +3,3 @@ node_modules
 .vscode
 *.log
 build
-.development.env
