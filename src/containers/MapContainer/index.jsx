@@ -29,7 +29,7 @@ function MapContainer() {
     const [operationsCB, setOperationsCB] = useState(true)
     const [error, setError] = useState(false)
  
-    Mapbox.accessToken = process.env.MAPBOX_API_KEY;
+    Mapbox.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
 
     //------------------------------------------------------
@@ -41,8 +41,8 @@ function MapContainer() {
         //UN Peacekeeping operations
         const clientUN = new Cosmic()
         const operations = clientUN.bucket({
-            slug: process.env.BUCKET_SLUG,
-            read_key: process.env.READ_KEY
+            slug: process.env.REACT_APP_BUCKET_SLUG,
+            read_key: process.env.REACT_APP_READ_KEY
         });
 
         operations.getObjects({
@@ -61,8 +61,8 @@ function MapContainer() {
         //conflicts
         const clientConflict = new Cosmic()
         const conflicts = clientConflict.bucket({
-            slug: process.env.BUCKET_SLUG,
-            read_key: process.env.READ_KEY
+            slug: process.env.REACT_APP_BUCKET_SLUG,
+            read_key: process.env.REACT_APP_READ_KEY
         });
 
         conflicts.getObjects({
@@ -259,7 +259,7 @@ function MapContainer() {
 
         //Adds navigation control
         map.addControl( new Mapbox.NavigationControl({
-            accessToken: process.env.MAPBOX_API_KEY
+            accessToken: process.env.REACT_APP_MAPBOX_API_KEY
             })
         )}
 
