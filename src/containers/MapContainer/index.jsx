@@ -46,7 +46,7 @@ function MapContainer() {
         });
 
         operations.getObjects({
-            type: 'conflicts-copy-3667df10-621e-11eb-a47b-456a3acdd925',
+            type: 'operations',
             limit: 20,
             props: 'slug,title,metadata',
             sort: 'created_at'
@@ -83,6 +83,8 @@ function MapContainer() {
     //CREATE THE MAP -------------------------------------
     //----------------------------------------------------
 
+    console.log("opdata", operationsData);
+    console.log("confdata", conflictData);
     useEffect(() => {
 
         //Makes sure the map is only loaded if the data is fetched and ready
