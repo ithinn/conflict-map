@@ -1,5 +1,3 @@
-Conflict map made with Mapbox and Cosmic with data visualizations made with Highcharts and Plotly
-
 
 # react-starter
 
